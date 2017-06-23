@@ -1,0 +1,104 @@
+<html>
+    <head>
+        <title>Kit Students</title>
+        <link rel="stylesheet" type="text/css"href="bootstrap.css"/>
+        <link rel="stylesheet" type="text/css"href="semantic.css"/>    
+        <link rel="stylesheet" href="icon.css"/>    
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" media="all">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" rel="stylesheet" media="all">
+        <script type="text/javascript" src="semantin.min.js" ></script>
+    </head>
+<body style="background-image: url(dd.jpg);background-size:cover;">
+ <div class="q">
+  <div class="ui container segment" style="width:35%; margin-top:2em; margin-bottom: 1.5em">
+      <h1 class="ui header" style="margin : 0 auto;">Sign-Up</h1>
+        <form class="ui form" action="/students" method="post">
+          <h4 class="ui dividing header"style="padding-top: 5;">Personal Information</h4>
+          <div class="two fields">
+            <div class="field">
+              <label>Full Name</label>
+                <div class="field">
+                  <input type="text" name="name" placeholder="Full Name" required>
+                </div>
+            </div>
+            <div class="field">
+             <label>Register Number</label>
+             <input type="number" name="regNo" placeholder="Enter the Reg. No." required>
+            </div>
+          </div>
+          <div class="two fields">
+            <div class="field">
+              <label>Date of birth</label>
+                <div class="field">
+                  <input type="date" name="dob" placeholder="Date of birth" required>
+                </div>
+            </div>
+            <div class="field">
+             <label>Mobile</label>
+             <input type="number" name="mobile" placeholder="Enter the mobile No." required>
+            </div>
+          </div>
+          <div class="two fields">
+            <div class="field">
+              <label>Department</label>
+              <select class="ui search dropdown" name="dept">
+                <option value="">Enter ur dept.</option>
+                <option value="ECE">ECE</option>
+                <option value="EEE">EEE</option>
+                <option value="MECH">MECH</option>
+                <option value="CSE">CSE</option>
+                <option value="AERO">AERO</option>
+                <option value="AGRI">Agricultural Engg.</option>
+                <option value="Bio Med">Bio Medical Engg.</option>
+                <option value="Bio Tech">Bio-Tech</option>
+                <option value="MBA">MBA</option>
+                <option value="MCA">MCA</option>
+                <option value="S&H">S & H</option>
+                <option value="GA">M.E</option>
+                <option value="HI">M.E</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>E-mail</label>
+              <input type="text" name="email" placeholder="Email" required></div>
+          </div>
+          <div class="field">
+            <label>Address</label>
+            <textarea name="address"></textarea>
+          </div>
+         <div class="field">
+            <label>Upload your resume</label>
+            <input type="file" name="cv" data-imagevalidate="yes" data-file-accept="pdf, doc, docx, xls, csv, txt, rtf, html, zip, mp3, wma, mpg, flv, avi, jpg, jpeg, png, gif" data-file-maxsize="10240" data-file-minsize="0" data-file-limit="0" data-component="fileupload" required />
+          </div>
+          <h4 class="ui dividing header">Account Info</h4>
+          <div class="two fields">
+            <div class="required field">
+              <label>Username</label>
+              <div class="ui icon input">
+                <input type="text" placeholder="Username" name="username">
+                <i class="user icon"></i>
+              </div>
+            </div>
+            <div class="required field">
+              <label>Password</label>
+              <div class="ui icon input">
+                <input type="password" name="pwd">
+                <i class="lock icon"></i>
+              </div>
+            </div>
+          </div>
+        <div class="ui hidden divider"></div>        
+          <div class="ui error message">
+            <div class="header">We noticed some issues</div>
+          </div>
+          <div><input type="submit"  class="ui submit button"></div>
+             <div class="ui success message">
+                <div class="header">Completed</div>
+                <p>You're all signed up </p>
+            </div>                
+        </form>
+      </div>
+    </div>   
+</body>
+</html>

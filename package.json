@@ -1,0 +1,24 @@
+{
+  "name": "kit",
+  "version": "1.0.0",
+  "description": "kit students app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "guru2402",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.16.1",
+    "connect-flash": "^0.1.1",
+    "ejs": "^2.5.6",
+    "express": "^4.14.1",
+    "express-session": "^1.15.3",
+    "firebase": "^4.1.2",
+    "mongoose": "^4.8.3",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^4.0.0"
+  }
+}
