@@ -1,29 +1,97 @@
 <html>
     <head>
         <title>Student Info</title>
-
         <link rel="stylesheet" href="bootstrap.css"/>
        <link rel="stylesheet" href="bootstrap.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <style>
+            body {
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 14px;
+                line-height: 1.42857143;
+                color: #333;
+                background-color: #fff;
+            }
+            h1{
+                font-size: 36px;
+                font-family: inherit;
+                font-weight: 500;
+                line-height: 1.1;
+                color: inherit;
+            }
+            .list-group {
+                    padding-left: 0;
+                    margin-bottom: 20px;
+            }
+            .list-group-item:first-child {
+                    border-top-left-radius: 4px;
+                    border-top-right-radius: 4px;
+                }
+            .list-group-item {
+                    position: relative;
+                    display: block;
+                    padding: 10px 15px;
+                    margin-bottom: -1px;
+                    background-color: #fff;
+                    border: 1px solid #ddd;
+                }
+            .container {
+                padding-right: 15px;
+                padding-left: 15px;
+                margin-right: auto;
+                margin-left: auto;     
+            }
+            .col-md-4{
+                    position: relative;
+                    min-height: 1px;
+                    padding-right: 15px;
+                    padding-left: 15px;
+                }
+            
+        </style>
     </head>
-    <body>
-        <div class="container" style="width:25%;">
-        <h1 style="margin:10 auto;">Student Details</h1>
-        <ul class="list-group">
-            <li class="list-group-item">Name :<%= item.name %></li>
-            <li class="list-group-item">Register Number :<%= item.regNo %></li>        
-            <li class="list-group-item">Semester :<%= item.semester %></li>        
-            <li class="list-group-item">Department :<%= item.dept %></li>        
-            <li class="list-group-item">English :<%= item.sub1 %></li>        
-            <li class="list-group-item">Mathematics :<%= item.sub2 %></li>        
-            <li class="list-group-item">Physics :<%= item.sub3 %></li>        
-            <li class="list-group-item">Chemistry :<%= item.sub4 %></li>        
-            <li class="list-group-item">Subject :<%= item.sub5 %></li>        
-            <li class="list-group-item">Subject :<%= item.sub6 %></li>        
-<!--            <li class="list-group-item">sub1</li>        -->
-                    
-                    </ul>
-    </div>
-    
-    
+    <body  style="background: url(student.jpg); background-size: cover;">
+        <div class="page-header">
+              <center><h1>Student Blue Card</h1></center>
+            </div>
+        <div class="container">
+          <% console.log(item); item.marks.map((item)=>{ console.log() %>
+            <% if(item.semester >= 5) { %>
+            <div class="container col-md-4" style="width:25%;">
+                <h2 style="margin:10 auto;">Sem - <%= item.semester %> marks</h1>
+                <ul class="list-group">
+                    <li class="list-group-item">Name :<%= item.name %></li>
+                    <li class="list-group-item">Register Number :<%= item.regNo %></li>        
+                    <li class="list-group-item">Semester :<%= item.semester %></li>
+                    <li class="list-group-item">Internal :<%= item.int %></li> 
+                    <li class="list-group-item">Department :<%= item.dept %></li>        
+                    <li class="list-group-item">subject1 :<%= item.sub1 %></li>        
+                    <li class="list-group-item">subject2 :<%= item.sub2 %></li>        
+                    <li class="list-group-item">subject3 :<%= item.sub3 %></li>        
+                    <li class="list-group-item">subject4 :<%= item.sub4 %></li>        
+                    <li class="list-group-item">subject5 :<%= item.sub5 %></li>        
+                    <li class="list-group-item">subject6 :<%= item.sub6 %></li>            
+                </ul>
+            </div>
+            <% } else { %>
+            <div class="container col-md-4" style="width:25%;">
+                <h2 style="margin:10 auto;">Sem - <%= item.semester %> marks</h1>
+                <ul class="list-group">
+                    <li class="list-group-item">Name :<%= item.name %></li>
+                    <li class="list-group-item">Register Number :<%= item.regNo %></li>        
+                    <li class="list-group-item">Semester :<%= item.semester %></li>
+                    <li class="list-group-item">Internal :<%= item.int %></li>
+                    <li class="list-group-item">Department :<%= item.dept %></li>        
+                    <li class="list-group-item"><%= sub1 %> :<%= item.sub1 %></li>        
+                    <li class="list-group-item"><%= sub2 %> :<%= item.sub2 %></li>        
+                    <li class="list-group-item"><%= sub3 %> :<%= item.sub3 %></li>        
+                    <li class="list-group-item"><%= sub4 %> :<%= item.sub4 %></li>        
+                    <li class="list-group-item"><%= sub5 %> :<%= item.sub5 %></li>        
+                    <li class="list-group-item"><%= sub6 %> :<%= item.sub6 %></li>            
+                </ul>
+            </div>
+            <% } %>
+            <% }) %>
+        </div>
     </body>
+    
 </html>

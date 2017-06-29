@@ -44,7 +44,7 @@
 <!--==============================================================================================================-->
                                          <!--  Content  -->
 <!--===============================================================================================================-->
-      <div class="container-fluid">
+      <div class="container">
           <div class="row">
             <div class="col-sm-3 col-md-2 col-lg-2 sidebar">
               <ul class="nav nav-sidebar">
@@ -57,18 +57,62 @@
                 <li><a href="/logout">Logout</a></li>
               </ul>
             </div>
+           
+            </div>
+          
             <center>
             <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                <h1 class="page-header" style="color:white">Profile</h1>
-                    <div class=" placeholder">
-                      <img src="pp.jpg" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-                      <h4 style="color:white"><%= item.name %></h4>
-                      <span class="text-muted">Dept : <%= item.dept %></span>
-                  </div>
-              </div>
+               <h1 class="page-header" style="color:white">Profile</h1>
+                </div>
             </center>
+           <div class="panel panel-info" style="width:50%;margin-left:400px;margin-top:100px">
+            <div class="panel-body">
+                
+                <div class="col-md-3 col-lg-3 " align="center"> <img alt="User Pic" src="http://babyinfoforyou.com/wp-content/uploads/2014/10/avatar-300x300.png" class="img-circle img-responsive"> </div>
+                <div class=" col-md-9 col-lg-9 "> 
+                  <table class="table table-user-information">
+                    <tbody>
+                      <tr>
+                        <td>Department:</td>
+                        <td>Programming</td>
+                      </tr>
+                      <tr>
+                        <td>Hire date:</td>
+                        <td>06/23/2013</td>
+                      </tr>
+                      <tr>
+                        <td>Date of Birth</td>
+                        <td>01/24/1988</td>
+                      </tr>
+                   
+                         <tr>
+                             <tr>
+                        <td>Gender</td>
+                        <td>Female</td>
+                      </tr>
+                        <tr>
+                        <td>Home Address</td>
+                        <td>Kathmandu,Nepal</td>
+                      </tr>
+                      <tr>
+                        <td>Email</td>
+                        <td><a href="mailto:info@support.com">info@support.com</a></td>
+                      </tr>
+                        <td>Phone Number</td>
+                        <td>123-4567-890(Landline)<br><br>555-4567-890(Mobile)
+                        </td>
+                           
+                      </tr>
+                     
+                    </tbody>
+                  </table>
+                  
+                  <a href="#" class="btn btn-primary">My Sales Performance</a>
+                  <a href="#" class="btn btn-primary">Team Sales Performance</a>
+                </div>
+              </div>
+            </div>
           </div>
-     </div>
 
 </body>
 </html>
