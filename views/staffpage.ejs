@@ -52,31 +52,34 @@
 <!--==============================================================================================================-->
                                          <!--  Content  -->
 <!--===============================================================================================================-->
-      <div class="container-fluid">
-          <div class="row">
-            <div class="col-sm-3 col-md-2 col-lg-2 sidebar">
-              <ul class="nav nav-sidebar">
-                <li class="active"><a href="#">profile <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">Attendance</a></li>
-                <li><a href="/blue">Mark Entry</a></li>
-                <li><a href="http://www.rejinpaul.com/2014/01/regulation-2013-syllabus-anna-university-syllabus-2013-regulation.html">Books</a></li>
-                <li><a href="http://www.rejinpaul.com/2016/10/anna-university-rejinpaul-ug-pg-course-materials-notifications-updates.html">Question Banks</a></li>
-                <li><a href="#">Update Exam Schedule</a></li>
-                <li><a href="/logout">Logout</a></li>
-              </ul>
-            </div>
-            <center>
-            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                <h1 class="page-header" style="color:white">Profile</h1>
-                    <div class=" placeholder">
-                      <img src="pp.jpg" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-                      <h4 style="color:white">Nmae</h4>
-                      <span class="text-muted">Dept </span>
+         <%  var error ;if (error) { %>
+           <div class="alert alert-danger"><%= error %></div>
+         <% } %>
+          <div class="container-fluid">
+              <div class="row">
+                <div class="col-sm-3 col-md-2 col-lg-2 sidebar">
+                  <ul class="nav nav-sidebar">
+                    <li class="active"><a href="#">profile <span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">Attendance</a></li>
+                    <li><a href="/blue">Mark Entry</a></li>
+                    <li><a href="http://www.rejinpaul.com/2014/01/regulation-2013-syllabus-anna-university-syllabus-2013-regulation.html">Books</a></li>
+                    <li><a href="http://www.rejinpaul.com/2016/10/anna-university-rejinpaul-ug-pg-course-materials-notifications-updates.html">Question Banks</a></li>
+                    <li><a href="#">Update Exam Schedule</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                  </ul>
+                </div>
+                <center>
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <h1 class="page-header" style="color:white">Profile</h1>
+                        <div class=" placeholder">
+                          <img src="pp.jpg" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
+                          <h4 style="color:white">Nmae</h4>
+                          <span class="text-muted">Dept </span>
+                      </div>
                   </div>
+                </center>
               </div>
-            </center>
-          </div>
-     </div>
+         </div>
 
 </body>
 </html>

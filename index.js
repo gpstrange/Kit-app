@@ -25,6 +25,18 @@ app.use(require("express-session")({
     saveUninitialized: false
 }));
 
+var multer  = require('multer');
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/uploads/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+})
+const upload = multer({storage: storage})
+
+app.use(bodyParser.json());
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -77,7 +89,7 @@ var studentsSchema = new mongoose.Schema({
     community:String,
     password: String,
     username:String,
-    cv : String,
+    pic : String,
     marks : [markSchema]
 });
 
@@ -96,7 +108,8 @@ app.get('/students', (req,res)=>{
     res.render('students');
 })
 
-app.post('/students',(req,res)=>{
+app.post('/students',upload.single('pic'),(req,res)=>{
+        console.log(req.file)
     var name = req.body.name,
         address = req.body.address,
         mobile = req.body.mobile,
@@ -105,7 +118,7 @@ app.post('/students',(req,res)=>{
         regNo = req.body.regNo,
         bloodGroup = req.body.bloodGroup,
         community = req.body.community,
-        cv = req.body.cv,
+        pic = req.file.originalname,
         dept = req.body.dept,
         username = req.body.username,
         password = req.body.pwd ;
@@ -114,7 +127,7 @@ app.post('/students',(req,res)=>{
           firebase.database().ref('users/' ).push({
             name: name,
             email: email,
-            cv : cv,
+            pic : pic,
             regNo : regNo,
             address : address,
             dept : dept,
@@ -135,27 +148,26 @@ app.post('/students',(req,res)=>{
                     dob:dob,
                     mobile:mobile,
                     username:username,
-                    cv:cv
+                    pic:pic
                 }
                  students.create(item , (err,created)=>{
                            if(err){
                                console.log(err);
-                               req.flash('error', 'Could not update , please try again');
-                               res.render('students') 
+                               res.render('students',{error : 'Something went wrong'})
                            }
                            console.log(item)
-                                res.render("home",{ item : item }); 
+                            res.render("home",{ item : item }); 
+
                     });
               
           }).catch(()=>{
               console.log("Data is not stored on mongodb"+error)
-              res.redirect('/students')
+              res.render('students',{error : 'Something went wrong'})
           })
         })
         .catch(function(error) {
           console.log(error)
-          req.flash('error', 'Could not update , please try again');
-            res.render('students')
+            res.render('students',{error : 'Something went wrong'})
         });   
 })
 
@@ -184,10 +196,13 @@ app.post('/register',(req,res)=>{
 app.post('/stafflogin', passport.authenticate("local", 
       {
         successRedirect: "/staffpage",
-        failureRedirect: "/register"
+        failureRedirect: "/stafflog"
     }),(req,res)=>{  
 })
 
+app.get('/stafflog',(req,res)=>{
+    res.render('stafflogin',{error:'Please check your user credentials'});
+})
 
 app.get('/staffpage',isLoggedIn,(req,res)=>{
          res.render('staffpage')
@@ -200,12 +215,11 @@ app.post('/login',(req,res)=>{
         res.redirect('/home')
     }).catch(()=>{
         console.log('Error')
-        res.redirect('/');
+        res.render('index',{error:'Please check your user credentials'});
     })
 })
 
 app.get('/home',(req,res)=>{
-    console.log("/mark")
     firebase.auth().onAuthStateChanged(function(user) {
         if(user){
             var user = firebase.auth().currentUser;
@@ -226,10 +240,14 @@ app.get('/home',(req,res)=>{
                 })
                 }
             else{
-                res.send(`<script>alert("You must be logged in")</script>`)
+                res.render('index',{error : 'You must be logged in'})
               }
             })
     })
+
+app.get('/edit',(req,res)=>{
+    
+})
 
 app.post('/staffsearch',(req,res)=>{
     var person = req.body.search;
@@ -250,7 +268,7 @@ app.post('/staffsearch',(req,res)=>{
                  else{  
                      x++;
                      if(x==j){
-                     res.send(`<script>alert("Please enter a valid Register number");</script>`);
+                     res.render('staffpage',{error : 'Enter a valid register number'});
                     }}
              }
          });  
@@ -438,7 +456,7 @@ app.get('/bluecard',(req,res)=>{
                                 })
         }
         else{
-            res.send(`<script>alert("You must be logged in")</script>`)
+            res.render('index',{error : 'You must be logged in'})
          }
 })
 })
@@ -499,12 +517,12 @@ app.post("/mark",(req,res)=>{
             if(semester > 4){
             collection.findOneAndUpdate({'regNo':regNo},{ $push: {'marks': maark}}).then(()=>{
                                 console.log(maark)
-                                res.send(`<script>alert("Saved");</script>`);
+                                res.render('markentry',{error : 'Marks Saved'});
                             })}
             else{
                 collection.findOneAndUpdate({'regNo':regNo},{ $push: {'marks': mark}}).then(()=>{
                                 console.log(mark)
-                                res.send(`<script>alert("Saved");</script>`);
+                                res.render('markentry',{error : 'Marks Saved'});
                             })}
     })
     })
@@ -698,7 +716,7 @@ function isLoggedIn(req,res,next){
     if(req.isAuthenticated()){
         return next();
     }else{
-        res.redirect('/')
+        res.render('index',{error : 'You must be logged in'})
     }
 }
 

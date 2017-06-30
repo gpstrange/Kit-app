@@ -41,7 +41,10 @@
 
             </div><!-- /.navbar-collapse -->
           </div><!-- /.container-fluid -->
-        </nav>    
+        </nav>
+        <%  var error ;if (error) { %>
+           <div class="alert alert-success"><%= error %></div>
+         <% } %>
     
      <div class="ui container segment" style="width:40%;    margin: 20 auto;padding-top: 10px;">
          <h1 style="margin:0 auto;">Enter The Marks here</h1>

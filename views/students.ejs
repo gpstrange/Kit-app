@@ -14,10 +14,14 @@
         <script type="text/javascript" src="semantic.min.js" ></script>
     </head>
 <body style="background-image: url(dd.jpg);background-size:cover;">
+    <% var error ; if (error) { %>
+       <div class="alert alert-danger"><%= error %></div>
+     <% } %>
+
  <div class="q">
   <div class="ui container segment" style="width:35%; margin-top:2em; margin-bottom: 1.5em">
       <h1 class="ui header" style="margin : 0 auto;">Sign-Up</h1>
-        <form  id="frmUploader" class="ui form" action="/students" method="post">
+        <form  id="frmUploader" enctype="multipart/form-data" class="ui form" action="/students" method="post">
           <h4 class="ui dividing header"style="padding-top: 5;">Personal Information</h4>
           <div class="two fields">
             <div class="field">
@@ -84,8 +88,8 @@
             <textarea name="address"></textarea>
           </div>
          <div class="field">
-            <label>Upload your resume</label>
-            <input type="file" name="cv" data-imagevalidate="yes" data-file-accept="pdf, doc, docx, xls, csv, txt, rtf, html, zip, mp3, wma, mpg, flv, avi, jpg, jpeg, png, gif" data-file-maxsize="10240" data-file-minsize="0" data-file-limit="0" data-component="fileupload" required />
+            <label>Upload your picture</label>
+            <input type="file" name="pic" required/>
           </div>
           <h4 class="ui dividing header">Account Info</h4>
           <div class="two fields">
