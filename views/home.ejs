@@ -33,6 +33,7 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
               <ul class="nav navbar-nav navbar-right">
+                <li><a href="/editprofile">Edit Profile</a></li>
                 <li><a href="/bluecard">Academics</a></li>
                 <li><a href="#">Books</a></li>
                 <li><a href="http://nptel.ac.in/">Nptel</a></li>
@@ -44,7 +45,12 @@
 <!--==============================================================================================================-->
                                          <!--  Content  -->
 <!--===============================================================================================================-->
-      <div class="container-fluid">
+<!--
+        <%  var error ;if (error) { %>
+           <div class="alert alert-success"><%= error %></div>
+         <% } %>
+-->
+        <div class="container-fluid">
           <div class="row">
             <div class="col-sm-3 col-md-2 col-lg-2 sidebar">
               <ul class="nav nav-sidebar">
@@ -57,15 +63,20 @@
                 <li><a href="/logout">Logout</a></li>
               </ul>
             </div>
-            <center>
-            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                <h1 class="page-header" style="color:white">Profile</h1>
-                    <div class=" placeholder">
-                      <img src="uploads/<%= item.pic %>" width="200" height="200" style="border: 7px solid rgba(224, 212, 212, 0.43);" class="img-responsive" alt="Generic placeholder thumbnail">
-                      <h3 style="color:white"><%= item.name %></h3>
-                      <span class="text-muted">Dept : <%= item.dept %></span>
+      <center>
+             <div class="ui container segment" style="width:35%; margin-top:2em;  margin-left:2em; margin-bottom: 1.5em">
+      <h1 class="ui header" style="margin : 0 auto;">Profile</h1><br>
+                  <div class=" placeholder">
+                      <img src="uploads/<%= item.pic %>" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail"><br>
+                        <h2 style="color:#000000; text-align:center"><%= item.name %></h4>
+                        <h4 style="color:#000000;  text-align:center">Reg No: <%= item.regNo %></h4>
+                        <h4 style="color:#000000;  text-align:center">DOB: <%= item.dob %></h4>
+                        <h4 style="color:#000000;  text-align:center">Mobile: <%= item.mobile %></h4>
+                        <h4 style="color:#000000;  text-align:center">Blood Group: <%= item.bloodGroup %></h4>
+                        <h4 style="color:#000000;  text-align:center">Community: <%= item.community %></h4>
+                        <h4 style="color:#000000;  text-align:center">Dept: <%= item.dept %></h4>
+                        <h4 style="color:#000000;  text-align:center">Email: <%= item.Email %></h4>
                   </div>
-              </div>
             </center>
           </div>
      </div>

@@ -1,9 +1,10 @@
-var express = require("express"),
+var express   = require("express"),
 	bodyParser = require("body-parser"),
 	mongoose	= require("mongoose"),
 	ejs          = require("ejs"),
     user           = require("./models/user"),
     firebase        = require("firebase"),
+//    methodOverride    = require("method-override"),
     flash             = require('connect-flash'),
     passport           = require("passport"),
     passportLocal       = require("passport-local"),
@@ -124,7 +125,9 @@ app.post('/students',upload.single('pic'),(req,res)=>{
         password = req.body.pwd ;
 
         firebase.auth().createUserWithEmailAndPassword(email, password).then(()=>{
-          firebase.database().ref('users/' ).push({
+          var user = firebase.auth().currentUser,
+              userId = user.uid;
+          firebase.database().ref('users/' + userId ).set({
             name: name,
             email: email,
             pic : pic,
@@ -156,7 +159,7 @@ app.post('/students',upload.single('pic'),(req,res)=>{
                                res.render('students',{error : 'Something went wrong'})
                            }
                            console.log(item)
-                            res.render("home",{ item : item }); 
+                            res.redirect("/home"); 
 
                     });
               
@@ -177,6 +180,32 @@ app.get('/staffs', (req,res)=>{
 
 app.get('/register',(req,res)=>{
      res.render("register"); 
+})
+
+app.get('/editprofile',(req,res)=>{
+     firebase.auth().onAuthStateChanged(function(user) {
+        if(user){
+            var user = firebase.auth().currentUser;
+            var emailVerify = user.email;
+                MongoClient.connect('mongodb://localhost/kit' , (err, db)=>{
+                    db.collection('students', function (err, collection) {
+                        collection.find().toArray(function(err, items) {
+                        if(err) throw err; 
+                        var j =items.length;
+                        for(var i=0; i<j ; i++){
+                           if(items[i].Email == emailVerify){
+                             var item = items[i];
+                             res.render('editpagestudent',{item:item})
+                         } 
+                        }
+                    })
+                    })
+                })
+                }
+            else{
+                res.render('index',{error : 'You must be logged in'})
+              }
+            })
 })
 
 app.post('/register',(req,res)=>{
@@ -233,7 +262,8 @@ app.get('/home',(req,res)=>{
                            if(items[i].Email == emailVerify){
                              var item = items[i];
                              res.render('home',{item:item})
-                         } 
+                               console.log(item)
+                           } 
                         }
                     })
                     })
@@ -245,9 +275,78 @@ app.get('/home',(req,res)=>{
             })
     })
 
-app.get('/edit',(req,res)=>{
+app.post('/editstudent',upload.single('pic'),(req,res)=>{
+    var user = firebase.auth().currentUser,
+        userId = user.uid,
+        Email = req.body.email,
+        name = req.body.name,
+        address = req.body.address,
+        mobile = req.body.mobile,
+        dob = req.body.dob,
+        regNo = req.body.regNo,
+        bloodGroup = req.body.bloodGroup,
+        community = req.body.community,
+        pic = req.file.originalname ,
+        dept = req.body.dept,
+        username = req.body.username,
+        password = req.body.pwd ;
+    var id = req.params.id;
+    console.log(regNo)
+      user.updatePassword(password).then(function() {
+          console.log("pwd sent.") 
+          firebase.database().ref('users/'+ userId).update({
+            name: name,
+            email: Email,
+            pic : pic,
+            regNo : regNo,
+            address : address,
+            dept : dept,
+            bloodGroup : bloodGroup,
+            community :community,
+            username : username,
+            mobile : mobile,
+            dob : dob
+          }).then(()=>{
+               var item = {
+                    name:name,
+                    address:address,
+                    Email:Email,
+                    regNo:regNo,
+                    dept:dept,
+                    bloodGroup:bloodGroup,
+                    community:community,
+                    dob:dob,
+                    mobile:mobile,
+                    username:username,
+                    pic:pic
+                }
+//               ======================================
+//               Here mongodb la update vakka paaru
+//               =====================================
+                  MongoClient.connect('mongodb://localhost/kit' , (err, db)=>{
+                    db.collection('students', function (err, collection) {
+                        collection.findOneAndUpdate({regNo:regNo},{ $set : { name:name,
+                                                                            address:address,
+                                                                            Email:Email,
+                                                                            regNo:regNo,
+                                                                            dept:dept,
+                                                                            bloodGroup:bloodGroup,
+                                                                            community:community,
+                                                                            dob:dob,
+                                                                            mobile:mobile,
+                                                                            username:username,
+                                                                            pic:pic  }},{returnOriginal: false, upsert: true},(err,item)=>{
+                            console.log(item.value)
+                            res.render('home',{item:item.value})
+                        })
+                    })
+                })           
+                });
+        })}, function(error) {
+          // An error happened.
+        })
     
-})
+
 
 app.post('/staffsearch',(req,res)=>{
     var person = req.body.search;

@@ -1,0 +1,183 @@
+<html>
+    <head>
+        <title>Kit || Home</title>      
+        <link rel="stylesheet" type="text/css"href="bootstrap.css"/>
+        <link rel="stylesheet" type="text/css"href="semantic.css"/>    
+        <link rel="stylesheet" href="icon.css"/>    
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" media="all">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" rel="stylesheet" media="all">
+        <link rel="stylesheet" href="bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        <link rel="stylesheet" href="style.css" />
+        <script type="text/javascript" src="semantin.min.js" ></script>
+        <script
+          src="https://code.jquery.com/jquery-3.1.1.min.js"
+          integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+          crossorigin="anonymous"></script>
+        <script src="bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    </head>
+    <style>
+   
+    </style>
+    <body class="img-responsive" >
+<!--============================================================================================================-->
+                                        <!--  NavBar  -->
+<!--============================================================================================================-->
+       <nav class="navbar navbar-inverse navbar-fixed-top">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">KIT</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+              <ul class="nav navbar-nav navbar-right">
+                <li><a href="/editprofile">Edit Profile</a></li>
+                <li><a href="/bluecard">Academics</a></li>
+                <li><a href="#">Books</a></li>
+                <li><a href="http://nptel.ac.in/">Nptel</a></li>
+                <li><a href="/logout">Logout</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+<!--==============================================================================================================-->
+                                         <!--  Content  -->
+<!--===============================================================================================================-->
+      <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-3 col-md-2 col-lg-2 sidebar">
+              <ul class="nav nav-sidebar">
+                <li class="active"><a href="#"><%= item.username %> <span class="sr-only">(current)</span></a></li>
+                <li><a href="#">Attendance</a></li>
+                <li><a href="/bluecard">Academics</a></li>
+                <li><a href="http://www.rejinpaul.com/2014/01/regulation-2013-syllabus-anna-university-syllabus-2013-regulation.html">Books</a></li>
+                <li><a href="http://www.rejinpaul.com/2016/10/anna-university-rejinpaul-ug-pg-course-materials-notifications-updates.html">Question Banks</a></li>
+                <li><a href="#">Exam Schedule</a></li>
+                <li><a href="/logout">Logout</a></li>
+              </ul>
+            </div>
+            <center>
+                <div class="container" style="width:50%;margin-top:20px">
+                    <h1>Edit Profile</h1>
+                    <hr>
+                    <form enctype="multipart/form-data" class="ui form" action="/editstudent" method="post">
+                    <div class="row">
+                      <div class="col-md-3">
+                        <div class="text-center">
+                          <img src="uploads/<%= item.pic %>" width="200" height="200" class="avatar img-circle img-responsive" alt="avatar">
+                          <h6>Upload a different photo...</h6>
+                          <input type="file" name="pic" value="" class="form-control" style="border:0px" required> 
+                        </div>
+                      </div>
+
+                      <div class="col-md-9 personal-info">
+                        <div class="alert alert-info alert-dismissable">
+                          <a class="panel-close close" data-dismiss="alert">×</a> 
+                          <i class="fa fa-coffee"></i>
+                          This is an <strong>.alert</strong>. Use this to show important messages to the user.
+                        </div>
+                        <h3>Personal info</h3>
+
+                        <form class="form-horizontal" role="form">
+                            <div class="field">
+                              <label>Full Name</label>
+                                <div class="field">
+                                  <input type="text" name="name" value="<%= item.name %>" >
+                                </div>
+                            </div>
+                            <div class="disabled field">
+                             <label>Reg.No </label>
+                             <input type="number" name="regNo" value="<%= item.regNo %>" >
+                            </div>
+                            <div class="field">
+                              <label>Date of birth</label>
+                                <div class="field">
+                                  <input type="date" name="dob" value="<%= item.dob %>" required>
+                                </div>
+                            </div>
+                            <div class="field">
+                             <label>Mobile</label>
+                             <input type="number" name="mobile" value="<%= item.mobile %>" required>
+                            </div>
+                            <div class="field">
+                              <label>Blood Group</label>
+                                <div class="field">
+                                  <input type="text" name="bloodGroup" value="<%= item.bloodGroup %>" required>
+                                </div>
+                            </div>
+                            <div class="field">
+                             <label>Community</label>
+                              <select class="ui search dropdown" name="community">
+                                <option value="<%= item.community %>"><%= item.community %></option>
+                                <option value="BC">BC</option>
+                                <option value="MBC">MBC</option>
+                                <option value="BCM">BCM</option>
+                                <option value="SC">SC</option>
+                                <option value="ST">ST</option>  
+                                <option value="OC">OC</option>
+                                </select>
+                             </div>
+                            <div class="disabled field">
+                              <label>Department</label>
+                              <select class="ui search dropdown" name="dept" >
+                                <option value="<%= item.dept %>"><%= item.dept %></option>
+                                <option value="ECE">ECE</option>
+                                <option value="EEE">EEE</option>
+                                <option value="MECH">MECH</option>
+                                <option value="CSE">CSE</option>
+                                <option value="AERO">AERO</option>
+                                <option value="AGRI">Agricultural Engg.</option>
+                                <option value="Bio Med">Bio Medical Engg.</option>
+                                <option value="Bio Tech">Bio-Tech</option>
+                                <option value="MBA">MBA</option>
+                                <option value="MCA">MCA</option>
+                                <option value="S&H">S & H</option>
+                                <option value="M.e">M.E</option>
+                                <option value="M.E">M.E</option>
+                              </select>
+                            </div>
+                            <div class="disabled field">
+                              <label>E-mail</label>
+                              <input type="text" name="email" value="<%= item.Email %>" ></div>
+                          <div class="field">
+                            <label>Address</label>
+                            <textarea name="address" value=""></textarea>
+                          </div>
+                          <h4 class="ui dividing header">Account Info</h4>
+                            <div class="required field">
+                              <label>Username</label>
+                              <div class="ui icon input">
+                                <input type="text" value="<%= item.username %>" name="username">
+                                <i class="user icon"></i>
+                              </div>
+                            </div>
+                            <div class="required field">
+                              <label>Password</label>
+                              <div class="ui icon input">
+                                <input type="password" name="pwd">
+                                <i class="lock icon"></i>
+                              </div>
+                            </div>
+                          <div class="form-group">
+                            <label class="col-md-3 control-label"></label>
+                            <div class="col-md-8">
+                              <input type="submit" class="btn btn-primary" value="Save Changes">
+                              <span></span>
+                              <input type="reset" class="btn btn-default" value="Cancel">
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                  </div>
+                </div>
+                <hr>
+            </center>
+          </div>
+        </div>
+    </body>
+</html>
