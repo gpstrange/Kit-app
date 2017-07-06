@@ -11,7 +11,7 @@ var express   = require("express"),
     expressSession       = require("express-session"),
     passportLocalMongoose = require("passport-local-mongoose");
 
-mongoose.connect("mongodb://localhost/kit");
+mongoose.connect(process.env.DATABASE_URL);
 mongoose.Promise = global.Promise;
 var app = express();
 var MongoClient = require('mongodb').MongoClient;
