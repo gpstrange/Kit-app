@@ -191,7 +191,7 @@ app.get('/editprofile',(req,res)=>{
                     db.collection('students', function (err, collection) {
                         collection.find().toArray(function(err, items) {
                         if(err){
-				res.render('
+				res.redirect('/home');
 			}; 
                         var j =items.length;
                         for(var i=0; i<j ; i++){
