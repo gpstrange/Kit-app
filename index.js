@@ -15,6 +15,7 @@ mongoose.connect(process.env.DATABASE_URL);
 mongoose.Promise = global.Promise;
 var app = express();
 var MongoClient = require('mongodb').MongoClient;
+var port = process.env.PORT || 8000;
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine', 'ejs');
@@ -819,6 +820,6 @@ function isLoggedIn(req,res,next){
     }
 }
 
-app.listen(8084 , ()=>{
+app.listen(port , ()=>{
     console.log("started at 8084")
 });
