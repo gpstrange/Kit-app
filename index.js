@@ -187,10 +187,12 @@ app.get('/editprofile',(req,res)=>{
         if(user){
             var user = firebase.auth().currentUser;
             var emailVerify = user.email;
-                MongoClient.connect('mongodb://localhost/kit' , (err, db)=>{
+                MongoClient.connect( process.env.MONGODB_URI, (err, db)=>{
                     db.collection('students', function (err, collection) {
                         collection.find().toArray(function(err, items) {
-                        if(err) throw err; 
+                        if(err){
+				res.render('
+			}; 
                         var j =items.length;
                         for(var i=0; i<j ; i++){
                            if(items[i].Email == emailVerify){
@@ -253,7 +255,7 @@ app.get('/home',(req,res)=>{
         if(user){
             var user = firebase.auth().currentUser;
             var emailVerify = user.email;
-                MongoClient.connect('mongodb://localhost/kit' , (err, db)=>{
+                MongoClient.connect(process.env.MONGODB_URI , (err, db)=>{
                     db.collection('students', function (err, collection) {
                         collection.find().toArray(function(err, items) {
                         if(err) throw err; 
@@ -609,7 +611,7 @@ app.post("/mark",(req,res)=>{
         sub6: code6 + ' --- : ---' +sub6 
     }
     console.log(maark)
-    MongoClient.connect("mongodb://localhost/kit", function (err, db) {
+    MongoClient.connect(process.env.MONGODB_URI, function (err, db) {
     
         db.collection('students', function (err, collection) {
             console.log(maark)
@@ -635,7 +637,7 @@ app.get('/:id/academics',(req,res)=>{
     
     var person = req.params.id;
     
-    MongoClient.connect("mongodb://localhost/kit", function (err, db) {
+    MongoClient.connect(process.env.MONGODB_URI, function (err, db) {
     
     db.collection('students', function (err, collection) {
         
