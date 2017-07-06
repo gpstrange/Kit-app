@@ -323,7 +323,7 @@ app.post('/editstudent',upload.single('pic'),(req,res)=>{
 //               ======================================
 //               Here mongodb la update vakka paaru
 //               =====================================
-                  MongoClient.connect('mongodb://localhost/kit' , (err, db)=>{
+                  MongoClient.connect(process.env.MONGODB_URI , (err, db)=>{
                     db.collection('students', function (err, collection) {
                         collection.findOneAndUpdate({regNo:regNo},{ $set : { name:name,
                                                                             address:address,
@@ -351,7 +351,7 @@ app.post('/editstudent',upload.single('pic'),(req,res)=>{
 app.post('/staffsearch',(req,res)=>{
     var person = req.body.search;
     
-    MongoClient.connect("mongodb://localhost/kit", function (err, db) {
+    MongoClient.connect(process.env.MONGODB_URI, function (err, db) {
     
     db.collection('students', function (err, collection) {
         
@@ -389,7 +389,7 @@ app.get('/bluecard',(req,res)=>{
         if(user){
             var user = firebase.auth().currentUser;
             var emailVerify = user.email;
-                MongoClient.connect('mongodb://localhost/kit' , (err, db)=>{
+                MongoClient.connect(process.env.MONGODB_URI , (err, db)=>{
                     db.collection('students', function (err, collection) {
                         collection.find({'Email' : emailVerify }).toArray(function(err, items) {
                                      if(err) throw err;    
