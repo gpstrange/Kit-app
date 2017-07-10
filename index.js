@@ -1,14 +1,14 @@
-var express   = require("express");
-	bodyParser = require("body-parser"),
-	mongoose	= require("mongoose"),
-	ejs          = require("ejs"),
-    user           = require("./models/user"),
-    firebase        = require("firebase"),
-    flash             = require('connect-flash'),
-    passport           = require("passport"),
-    passportLocal       = require("passport-local"),
-    expressSession       = require("express-session"),
-    passportLocalMongoose = require("passport-local-mongoose");
+var express   = require("express"),
+	bodyParser  = require("body-parser"),
+	mongoose      = require("mongoose"),
+	ejs             = require("ejs"),
+        user             = require("./models/user"),
+        firebase          = require("firebase"),
+        flash               = require('connect-flash'),
+        passport             = require("passport"),
+        passportLocal          = require("passport-local"),
+        expressSession          = require("express-session"),
+        passportLocalMongoose    = require("passport-local-mongoose");
 
 mongoose.connect(process.env.MONGODB_URI);
 mongoose.Promise = global.Promise;
