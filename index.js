@@ -255,6 +255,7 @@ app.get('/home',(req,res)=>{
         if(user){
             var user = firebase.auth().currentUser;
             var emailVerify = user.email;
+		console.log("Firebase auth done");
                 MongoClient.connect(process.env.MONGODB_URI , (err, db)=>{
                     db.collection('students', function (err, collection) {
                         collection.find().toArray(function(err, items) {
