@@ -2,13 +2,13 @@ var express   = require("express"),
 	bodyParser  = require("body-parser"),
 	mongoose      = require("mongoose"),
 	ejs             = require("ejs"),
-        user             = require("./models/user"),
-        firebase          = require("firebase"),
-        flash               = require('connect-flash'),
-        passport             = require("passport"),
-        passportLocal          = require("passport-local"),
-        expressSession          = require("express-session"),
-        passportLocalMongoose    = require("passport-local-mongoose");
+    user             = require("./models/user"),
+    firebase          = require("firebase"),
+    flash               = require('connect-flash'),
+    passport             = require("passport"),
+    passportLocal          = require("passport-local"),
+    expressSession          = require("express-session"),
+    passportLocalMongoose    = require("passport-local-mongoose");
 
 mongoose.connect(process.env.MONGODB_URI);
 mongoose.Promise = global.Promise;
@@ -359,7 +359,9 @@ app.post('/staffsearch',(req,res)=>{
     db.collection('students', function (err, collection) {
         
          collection.find().toArray(function(err, items) {
-            if(err) throw err;    
+            if(err) {{
+                            res.send("404 : No results found");
+                            }};    
              var j =items.length;
              var x = 0;
              for(var i=0;i<j;i++){
@@ -395,7 +397,9 @@ app.get('/bluecard',(req,res)=>{
                 MongoClient.connect(process.env.MONGODB_URI , (err, db)=>{
                     db.collection('students', function (err, collection) {
                         collection.find({'Email' : emailVerify }).toArray(function(err, items) {
-                                     if(err) throw err;    
+                                     if(err) {{
+                                                res.send("404 Error : No results found");
+                                            }};    
                                      var j =items.length;
                                      console.log(items[0].marks.length)
                                      var x = items[0].marks.length - 1;
@@ -552,7 +556,9 @@ app.get('/bluecard',(req,res)=>{
                                                                         })
                                              }
 
-
+                                            else{
+                                                res.send("404 Error");
+                                            }
                                     })
                                     })
                                 })
@@ -643,7 +649,9 @@ app.get('/:id/academics',(req,res)=>{
     db.collection('students', function (err, collection) {
         
          collection.find({'regNo' : person }).toArray(function(err, items) {
-            if(err) throw err;    
+            if(err) {  
+                            res.send("404 : No results found");
+                            
              var j =items.length;
              console.log(items[0].marks.length)
              var x = items[0].marks.length - 1;
