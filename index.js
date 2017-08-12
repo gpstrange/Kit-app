@@ -259,7 +259,7 @@ app.get('/home',(req,res)=>{
                 MongoClient.connect(process.env.MONGODB_URI , (err, db)=>{
                     db.collection('students', function (err, collection) {
                         collection.find().toArray(function(err, items) {
-                        if(err) throw err; 
+                        if(err){res.send("Somthing went wrong"}; 
                         var j =items.length;
                         for(var i=0; i<j ; i++){
                            if(items[i].Email == emailVerify){
