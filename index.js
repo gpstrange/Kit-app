@@ -434,6 +434,9 @@ app.get("/bluecard", (req, res) => {
               }
             }
             var j = items.length;
+            if (j == 0) {
+              res.send("No results found");
+            }
             console.log(items[0].marks.length);
             var x = items[0].marks.length - 1;
             var sems = items[0].marks[x].semester,
