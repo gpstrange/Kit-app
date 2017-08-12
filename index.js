@@ -556,9 +556,7 @@ app.get('/bluecard',(req,res)=>{
                                                                         })
                                              }
 
-                                            else{
-                                                res.send("404 Error");
-                                            }
+                                          
                                     })
                                     })
                                 })
