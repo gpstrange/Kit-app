@@ -10,7 +10,7 @@ var express = require("express"),
   expressSession = require("express-session"),
   passportLocalMongoose = require("passport-local-mongoose");
 
-mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect("mongodb://localhost/kit" || process.env.MONGODB_URI);
 mongoose.Promise = global.Promise;
 var app = express();
 var MongoClient = require("mongodb").MongoClient;
@@ -194,22 +194,25 @@ app.get("/editprofile", (req, res) => {
     if (user) {
       var user = firebase.auth().currentUser;
       var emailVerify = user.email;
-      MongoClient.connect(process.env.MONGODB_URI, (err, db) => {
-        db.collection("students", function(err, collection) {
-          collection.find().toArray(function(err, items) {
-            if (err) {
-              res.redirect("/home");
-            }
-            var j = items.length;
-            for (var i = 0; i < j; i++) {
-              if (items[i].Email == emailVerify) {
-                var item = items[i];
-                res.render("editpagestudent", { item: item });
+      MongoClient.connect(
+        "mongodb://localhost/kit" || process.env.MONGODB_URI,
+        (err, db) => {
+          db.collection("students", function(err, collection) {
+            collection.find().toArray(function(err, items) {
+              if (err) {
+                res.redirect("/home");
               }
-            }
+              var j = items.length;
+              for (var i = 0; i < j; i++) {
+                if (items[i].Email == emailVerify) {
+                  var item = items[i];
+                  res.render("editpagestudent", { item: item });
+                }
+              }
+            });
           });
-        });
-      });
+        }
+      );
     } else {
       res.render("index", { error: "You must be logged in" });
     }
@@ -267,23 +270,26 @@ app.get("/home", (req, res) => {
       var user = firebase.auth().currentUser;
       var emailVerify = user.email;
       console.log("Firebase auth done");
-      MongoClient.connect(process.env.MONGODB_URI, (err, db) => {
-        db.collection("students", function(err, collection) {
-          collection.find().toArray(function(err, items) {
-            if (err) {
-              res.send("Somthing went wrong");
-            }
-            var j = items.length;
-            for (var i = 0; i < j; i++) {
-              if (items[i].Email == emailVerify) {
-                var item = items[i];
-                res.render("home", { item: item });
-                console.log(item);
+      MongoClient.connect(
+        "mongodb://localhost/kit" || process.env.MONGODB_URI,
+        (err, db) => {
+          db.collection("students", function(err, collection) {
+            collection.find().toArray(function(err, items) {
+              if (err) {
+                res.send("Somthing went wrong");
               }
-            }
+              var j = items.length;
+              for (var i = 0; i < j; i++) {
+                if (items[i].Email == emailVerify) {
+                  var item = items[i];
+                  res.render("home", { item: item });
+                  console.log(item);
+                }
+              }
+            });
           });
-        });
-      });
+        }
+      );
     } else {
       res.render("index", { error: "You must be logged in" });
     }
@@ -345,33 +351,36 @@ app.post(
           //               ======================================
           //               Here mongodb la update vakka paaru
           //               =====================================
-          MongoClient.connect(process.env.MONGODB_URI, (err, db) => {
-            db.collection("students", function(err, collection) {
-              collection.findOneAndUpdate(
-                { regNo: regNo },
-                {
-                  $set: {
-                    name: name,
-                    address: address,
-                    Email: Email,
-                    regNo: regNo,
-                    dept: dept,
-                    bloodGroup: bloodGroup,
-                    community: community,
-                    dob: dob,
-                    mobile: mobile,
-                    username: username,
-                    pic: pic
+          MongoClient.connect(
+            "mongodb://localhost/kit" || process.env.MONGODB_URI,
+            (err, db) => {
+              db.collection("students", function(err, collection) {
+                collection.findOneAndUpdate(
+                  { regNo: regNo },
+                  {
+                    $set: {
+                      name: name,
+                      address: address,
+                      Email: Email,
+                      regNo: regNo,
+                      dept: dept,
+                      bloodGroup: bloodGroup,
+                      community: community,
+                      dob: dob,
+                      mobile: mobile,
+                      username: username,
+                      pic: pic
+                    }
+                  },
+                  { returnOriginal: false, upsert: true },
+                  (err, item) => {
+                    console.log(item.value);
+                    res.render("home", { item: item.value });
                   }
-                },
-                { returnOriginal: false, upsert: true },
-                (err, item) => {
-                  console.log(item.value);
-                  res.render("home", { item: item.value });
-                }
-              );
-            });
-          });
+                );
+              });
+            }
+          );
         });
     });
   },
@@ -383,32 +392,35 @@ app.post(
 app.post("/staffsearch", (req, res) => {
   var person = req.body.search;
 
-  MongoClient.connect(process.env.MONGODB_URI, function(err, db) {
-    db.collection("students", function(err, collection) {
-      collection.find().toArray(function(err, items) {
-        if (err) {
-          {
-            res.send("404 : No results found");
-          }
-        }
-        var j = items.length;
-        var x = 0;
-        for (var i = 0; i < j; i++) {
-          if (items[i].regNo == person) {
-            var item = items[i];
-            res.render("searchstudent", { item: item });
-          } else {
-            x++;
-            if (x == j) {
-              res.render("staffpage", {
-                error: "Enter a valid register number"
-              });
+  MongoClient.connect(
+    "mongodb://localhost/kit" || process.env.MONGODB_URI,
+    function(err, db) {
+      db.collection("students", function(err, collection) {
+        collection.find().toArray(function(err, items) {
+          if (err) {
+            {
+              res.send("404 : No results found");
             }
           }
-        }
+          var j = items.length;
+          var x = 0;
+          for (var i = 0; i < j; i++) {
+            if (items[i].regNo == person) {
+              var item = items[i];
+              res.render("searchstudent", { item: item });
+            } else {
+              x++;
+              if (x == j) {
+                res.render("staffpage", {
+                  error: "Enter a valid register number"
+                });
+              }
+            }
+          }
+        });
       });
-    });
-  });
+    }
+  );
 });
 
 app.get("/logout", (req, res) => {
@@ -425,191 +437,196 @@ app.get("/bluecard", (req, res) => {
     if (user) {
       var user = firebase.auth().currentUser;
       var emailVerify = user.email;
-      MongoClient.connect(process.env.MONGODB_URI, (err, db) => {
-        db.collection("students", function(err, collection) {
-          collection.find({ Email: emailVerify }).toArray(function(err, items) {
-            if (err) {
-              {
-                res.send("404 Error : No results found");
-              }
-            }
-            var j = items.length;
-            if (j == 0) {
-              res.send("No results found");
-            }
-            console.log(items[0].marks.length);
-            var x = items[0].marks.length - 1;
-            var sems = items[0].marks[x].semester,
-              dept = items[0].marks[x].dept,
-              item = items[0];
-            if (sems == 1) {
-              res.render("student", {
-                item: item,
-                sub1: "English1",
-                sub2: "Mathematics1",
-                sub3: "Physics1",
-                sub4: "Chemistry1",
-                sub5: "ComputerProgramming",
-                sub6: "EngineeringGraphics"
+      MongoClient.connect(
+        "mongodb://localhost/kit" || process.env.MONGODB_URI,
+        (err, db) => {
+          db.collection("students", function(err, collection) {
+            collection
+              .find({ Email: emailVerify })
+              .toArray(function(err, items) {
+                if (err) {
+                  {
+                    res.send("404 Error : No results found");
+                  }
+                }
+                var j = items.length;
+                if (j == 0) {
+                  res.send("No results found");
+                }
+                console.log(items[0].marks.length);
+                var x = items[0].marks.length - 1;
+                var sems = items[0].marks[x].semester,
+                  dept = items[0].marks[x].dept,
+                  item = items[0];
+                if (sems == 1) {
+                  res.render("student", {
+                    item: item,
+                    sub1: "English1",
+                    sub2: "Mathematics1",
+                    sub3: "Physics1",
+                    sub4: "Chemistry1",
+                    sub5: "ComputerProgramming",
+                    sub6: "EngineeringGraphics"
+                  });
+                } else if (sems == 2 && dept == "ece") {
+                  res.render("student", {
+                    item: item,
+                    sub1: "English2",
+                    sub2: "Mathematics2",
+                    sub3: "Physics2",
+                    sub4: "Chemistry2",
+                    sub5: "CircuitTheory",
+                    sub6: "ED"
+                  });
+                } else if (sems == 2 && dept == "eee") {
+                  res.render("student", {
+                    item: item,
+                    sub1: "English2",
+                    sub2: "Mathematics2",
+                    sub3: "Physics2",
+                    sub4: "Chemistry2",
+                    sub5: "CircuitTheory",
+                    sub6: "BCME"
+                  });
+                } else if (sems == 2 && dept == "cse") {
+                  res.render("student", {
+                    item: item,
+                    sub1: "English2",
+                    sub2: "Mathematics2",
+                    sub3: "Physics2",
+                    sub4: "DPSD",
+                    sub5: "PCE",
+                    sub6: "BCME"
+                  });
+                } else if (sems == 2 && dept == "mech") {
+                  res.render("student", {
+                    item: item,
+                    sub1: "English2",
+                    sub2: "Mathematics2",
+                    sub3: "Physics2",
+                    sub4: "Chemistry2",
+                    sub5: "BEEE",
+                    sub6: "EM"
+                  });
+                } else if (sems == 2 && dept == "aero") {
+                  res.render("student", {
+                    item: item,
+                    sub1: "English2",
+                    sub2: "Mathematics2",
+                    sub3: "Physics2",
+                    sub4: "Chemistry2",
+                    sub5: "BEEE",
+                    sub6: "EM"
+                  });
+                } else if (sems == 3 && dept == "ece") {
+                  res.render("student", {
+                    item: item,
+                    sub1: "MA6351",
+                    sub2: "EE6352",
+                    sub3: "EC6301",
+                    sub4: "EC6302",
+                    sub5: "EC6303",
+                    sub6: "EC6304"
+                  });
+                } else if (sems == 3 && dept == "eee") {
+                  res.render("student", {
+                    item: item,
+                    sub1: "MA8357",
+                    sub2: "GE8351",
+                    sub3: "EE8301",
+                    sub4: "EE8302",
+                    sub5: "EC8304",
+                    sub6: "EE8304"
+                  });
+                } else if (sems == 3 && dept == "cse") {
+                  res.render("student", {
+                    item: item,
+                    sub1: "MA6351",
+                    sub2: "CS6301",
+                    sub3: "CS6302",
+                    sub4: "CS6303",
+                    sub5: "CS6304",
+                    sub6: "GE6351"
+                  });
+                } else if (sems == 3 && dept == "mech") {
+                  res.render("student", {
+                    item: item,
+                    sub1: "MA6351",
+                    sub2: "CE6306",
+                    sub3: "ME6301",
+                    sub4: "CE6451",
+                    sub5: "ME6302",
+                    sub6: "EE6351"
+                  });
+                } else if (sems == 3 && dept == "aero") {
+                  res.render("student", {
+                    item: item,
+                    sub1: "MA6351",
+                    sub2: "ME6352",
+                    sub3: "AE6301",
+                    sub4: "CE6451",
+                    sub5: "CE6452",
+                    sub6: "AE6302"
+                  });
+                } else if (sems == 4 && dept == "ece") {
+                  res.render("student", {
+                    item: item,
+                    sub1: "MA6451",
+                    sub2: "EC6401",
+                    sub3: "EC6402",
+                    sub4: "EC6403",
+                    sub5: "EC6404",
+                    sub6: "EC6405"
+                  });
+                } else if (sems == 4 && dept == "eee") {
+                  res.render("student", {
+                    item: item,
+                    sub1: "EC8404",
+                    sub2: "EE8402",
+                    sub3: "EE8403",
+                    sub4: "EE8404",
+                    sub5: "EE8405",
+                    sub6: "EE8406"
+                  });
+                } else if (sems == 4 && dept == "cse") {
+                  res.render("student", {
+                    item: item,
+                    sub1: "MA6453 ",
+                    sub2: "CS6551",
+                    sub3: "CS6401",
+                    sub4: "CS6402",
+                    sub5: "EC6504",
+                    sub6: "CS6403"
+                  });
+                } else if (sems == 4 && dept == "mech") {
+                  res.render("student", {
+                    item: item,
+                    sub1: "MA6452",
+                    sub2: "ME6401",
+                    sub3: "ME6402",
+                    sub4: "ME6403",
+                    sub5: "GE6351",
+                    sub6: "ME6404"
+                  });
+                } else if (sems == 4 && dept == "aero") {
+                  res.render("student", {
+                    item: item,
+                    sub1: "MA6459",
+                    sub2: "AE6401",
+                    sub3: "AE6402",
+                    sub4: "AT6302",
+                    sub5: "AE6403",
+                    sub6: "AE6404"
+                  });
+                } else if (sems > 4) {
+                  res.render("student", {
+                    item: item
+                  });
+                }
               });
-            } else if (sems == 2 && dept == "ece") {
-              res.render("student", {
-                item: item,
-                sub1: "English2",
-                sub2: "Mathematics2",
-                sub3: "Physics2",
-                sub4: "Chemistry2",
-                sub5: "CircuitTheory",
-                sub6: "ED"
-              });
-            } else if (sems == 2 && dept == "eee") {
-              res.render("student", {
-                item: item,
-                sub1: "English2",
-                sub2: "Mathematics2",
-                sub3: "Physics2",
-                sub4: "Chemistry2",
-                sub5: "CircuitTheory",
-                sub6: "BCME"
-              });
-            } else if (sems == 2 && dept == "cse") {
-              res.render("student", {
-                item: item,
-                sub1: "English2",
-                sub2: "Mathematics2",
-                sub3: "Physics2",
-                sub4: "DPSD",
-                sub5: "PCE",
-                sub6: "BCME"
-              });
-            } else if (sems == 2 && dept == "mech") {
-              res.render("student", {
-                item: item,
-                sub1: "English2",
-                sub2: "Mathematics2",
-                sub3: "Physics2",
-                sub4: "Chemistry2",
-                sub5: "BEEE",
-                sub6: "EM"
-              });
-            } else if (sems == 2 && dept == "aero") {
-              res.render("student", {
-                item: item,
-                sub1: "English2",
-                sub2: "Mathematics2",
-                sub3: "Physics2",
-                sub4: "Chemistry2",
-                sub5: "BEEE",
-                sub6: "EM"
-              });
-            } else if (sems == 3 && dept == "ece") {
-              res.render("student", {
-                item: item,
-                sub1: "MA6351",
-                sub2: "EE6352",
-                sub3: "EC6301",
-                sub4: "EC6302",
-                sub5: "EC6303",
-                sub6: "EC6304"
-              });
-            } else if (sems == 3 && dept == "eee") {
-              res.render("student", {
-                item: item,
-                sub1: "MA8357",
-                sub2: "GE8351",
-                sub3: "EE8301",
-                sub4: "EE8302",
-                sub5: "EC8304",
-                sub6: "EE8304"
-              });
-            } else if (sems == 3 && dept == "cse") {
-              res.render("student", {
-                item: item,
-                sub1: "MA6351",
-                sub2: "CS6301",
-                sub3: "CS6302",
-                sub4: "CS6303",
-                sub5: "CS6304",
-                sub6: "GE6351"
-              });
-            } else if (sems == 3 && dept == "mech") {
-              res.render("student", {
-                item: item,
-                sub1: "MA6351",
-                sub2: "CE6306",
-                sub3: "ME6301",
-                sub4: "CE6451",
-                sub5: "ME6302",
-                sub6: "EE6351"
-              });
-            } else if (sems == 3 && dept == "aero") {
-              res.render("student", {
-                item: item,
-                sub1: "MA6351",
-                sub2: "ME6352",
-                sub3: "AE6301",
-                sub4: "CE6451",
-                sub5: "CE6452",
-                sub6: "AE6302"
-              });
-            } else if (sems == 4 && dept == "ece") {
-              res.render("student", {
-                item: item,
-                sub1: "MA6451",
-                sub2: "EC6401",
-                sub3: "EC6402",
-                sub4: "EC6403",
-                sub5: "EC6404",
-                sub6: "EC6405"
-              });
-            } else if (sems == 4 && dept == "eee") {
-              res.render("student", {
-                item: item,
-                sub1: "EC8404",
-                sub2: "EE8402",
-                sub3: "EE8403",
-                sub4: "EE8404",
-                sub5: "EE8405",
-                sub6: "EE8406"
-              });
-            } else if (sems == 4 && dept == "cse") {
-              res.render("student", {
-                item: item,
-                sub1: "MA6453 ",
-                sub2: "CS6551",
-                sub3: "CS6401",
-                sub4: "CS6402",
-                sub5: "EC6504",
-                sub6: "CS6403"
-              });
-            } else if (sems == 4 && dept == "mech") {
-              res.render("student", {
-                item: item,
-                sub1: "MA6452",
-                sub2: "ME6401",
-                sub3: "ME6402",
-                sub4: "ME6403",
-                sub5: "GE6351",
-                sub6: "ME6404"
-              });
-            } else if (sems == 4 && dept == "aero") {
-              res.render("student", {
-                item: item,
-                sub1: "MA6459",
-                sub2: "AE6401",
-                sub3: "AE6402",
-                sub4: "AT6302",
-                sub5: "AE6403",
-                sub6: "AE6404"
-              });
-            } else if (sems > 4) {
-              res.render("student", {
-                item: item
-              });
-            }
           });
-        });
-      });
+        }
+      );
     } else {
       res.render("index", { error: "You must be logged in" });
     }
@@ -664,26 +681,29 @@ app.post("/mark", (req, res) => {
     sub6: code6 + " --- : ---" + sub6
   };
   console.log(maark);
-  MongoClient.connect(process.env.MONGODB_URI, function(err, db) {
-    db.collection("students", function(err, collection) {
-      console.log(maark);
-      if (semester > 4) {
-        collection
-          .findOneAndUpdate({ regNo: regNo }, { $push: { marks: maark } })
-          .then(() => {
-            console.log(maark);
-            res.render("markentry", { error: "Marks Saved" });
-          });
-      } else {
-        collection
-          .findOneAndUpdate({ regNo: regNo }, { $push: { marks: mark } })
-          .then(() => {
-            console.log(mark);
-            res.render("markentry", { error: "Marks Saved" });
-          });
-      }
-    });
-  });
+  MongoClient.connect(
+    "mongodb://localhost/kit" || process.env.MONGODB_URI,
+    function(err, db) {
+      db.collection("students", function(err, collection) {
+        console.log(maark);
+        if (semester > 4) {
+          collection
+            .findOneAndUpdate({ regNo: regNo }, { $push: { marks: maark } })
+            .then(() => {
+              console.log(maark);
+              res.render("markentry", { error: "Marks Saved" });
+            });
+        } else {
+          collection
+            .findOneAndUpdate({ regNo: regNo }, { $push: { marks: mark } })
+            .then(() => {
+              console.log(mark);
+              res.render("markentry", { error: "Marks Saved" });
+            });
+        }
+      });
+    }
+  );
 });
 
 app.get("/blue", isLoggedIn, (req, res) => {
@@ -693,194 +713,197 @@ app.get("/blue", isLoggedIn, (req, res) => {
 app.get("/:id/academics", (req, res) => {
   var person = req.params.id;
 
-  MongoClient.connect(process.env.MONGODB_URI, function(err, db) {
-    db.collection("students", function(err, collection) {
-      collection.find({ regNo: person }).toArray(function(err, items) {
-        if (err) {
-          res.send("404 : No results found");
-        }
+  MongoClient.connect(
+    "mongodb://localhost/kit" || process.env.MONGODB_URI,
+    function(err, db) {
+      db.collection("students", function(err, collection) {
+        collection.find({ regNo: person }).toArray(function(err, items) {
+          if (err) {
+            res.send("404 : No results found");
+          }
 
-        var j = items.length;
-        console.log(items[0].marks.length);
-        var x = items[0].marks.length - 1;
-        var sems = items[0].marks[x].semester,
-          dept = items[0].marks[x].dept,
-          item = items[0];
-        if (sems == 1) {
-          res.render("student", {
-            item: item,
-            sub1: "English1",
-            sub2: "Mathematics1",
-            sub3: "Physics1",
-            sub4: "Chemistry1",
-            sub5: "ComputerProgramming",
-            sub6: "EngineeringGraphics"
-          });
-        } else if (sems == 2 && dept == "ece") {
-          res.render("student", {
-            item: item,
-            sub1: "English2",
-            sub2: "Mathematics2",
-            sub3: "Physics2",
-            sub4: "Chemistry2",
-            sub5: "CircuitTheory",
-            sub6: "ED"
-          });
-        } else if (sems == 2 && dept == "eee") {
-          res.render("student", {
-            item: item,
-            sub1: "English2",
-            sub2: "Mathematics2",
-            sub3: "Physics2",
-            sub4: "Chemistry2",
-            sub5: "CircuitTheory",
-            sub6: "BCME"
-          });
-        } else if (sems == 2 && dept == "cse") {
-          res.render("student", {
-            item: item,
-            sub1: "English2",
-            sub2: "Mathematics2",
-            sub3: "Physics2",
-            sub4: "DPSD",
-            sub5: "PCE",
-            sub6: "BCME"
-          });
-        } else if (sems == 2 && dept == "mech") {
-          res.render("student", {
-            item: item,
-            sub1: "English2",
-            sub2: "Mathematics2",
-            sub3: "Physics2",
-            sub4: "Chemistry2",
-            sub5: "BEEE",
-            sub6: "EM"
-          });
-        } else if (sems == 2 && dept == "aero") {
-          res.render("student", {
-            item: item,
-            sub1: "English2",
-            sub2: "Mathematics2",
-            sub3: "Physics2",
-            sub4: "Chemistry2",
-            sub5: "BEEE",
-            sub6: "EM"
-          });
-        } else if (sems == 3 && dept == "ece") {
-          res.render("student", {
-            item: item,
-            sub1: "MA6351",
-            sub2: "EE6352",
-            sub3: "EC6301",
-            sub4: "EC6302",
-            sub5: "EC6303",
-            sub6: "EC6304"
-          });
-        } else if (sems == 3 && dept == "eee") {
-          res.render("student", {
-            item: item,
-            sub1: "MA8357",
-            sub2: "GE8351",
-            sub3: "EE8301",
-            sub4: "EE8302",
-            sub5: "EC8304",
-            sub6: "EE8304"
-          });
-        } else if (sems == 3 && dept == "cse") {
-          res.render("student", {
-            item: item,
-            sub1: "MA6351",
-            sub2: "CS6301",
-            sub3: "CS6302",
-            sub4: "CS6303",
-            sub5: "CS6304",
-            sub6: "GE6351"
-          });
-        } else if (sems == 3 && dept == "mech") {
-          res.render("student", {
-            item: item,
-            sub1: "MA6351",
-            sub2: "CE6306",
-            sub3: "ME6301",
-            sub4: "CE6451",
-            sub5: "ME6302",
-            sub6: "EE6351"
-          });
-        } else if (sems == 3 && dept == "aero") {
-          res.render("student", {
-            item: item,
-            sub1: "MA6351",
-            sub2: "ME6352",
-            sub3: "AE6301",
-            sub4: "CE6451",
-            sub5: "CE6452",
-            sub6: "AE6302"
-          });
-        } else if (sems == 4 && dept == "ece") {
-          res.render("student", {
-            item: item,
-            sub1: "MA6451",
-            sub2: "EC6401",
-            sub3: "EC6402",
-            sub4: "EC6403",
-            sub5: "EC6404",
-            sub6: "EC6405"
-          });
-        } else if (sems == 4 && dept == "eee") {
-          res.render("student", {
-            item: item,
-            sub1: "EC8404",
-            sub2: "EE8402",
-            sub3: "EE8403",
-            sub4: "EE8404",
-            sub5: "EE8405",
-            sub6: "EE8406"
-          });
-        } else if (sems == 4 && dept == "cse") {
-          res.render("student", {
-            item: item,
-            sub1: "MA6453 ",
-            sub2: "CS6551",
-            sub3: "CS6401",
-            sub4: "CS6402",
-            sub5: "EC6504",
-            sub6: "CS6403"
-          });
-        } else if (sems == 4 && dept == "mech") {
-          res.render("student", {
-            item: item,
-            sub1: "MA6452",
-            sub2: "ME6401",
-            sub3: "ME6402",
-            sub4: "ME6403",
-            sub5: "GE6351",
-            sub6: "ME6404"
-          });
-        } else if (sems == 4 && dept == "aero") {
-          res.render("student", {
-            item: item,
-            sub1: "MA6459",
-            sub2: "AE6401",
-            sub3: "AE6402",
-            sub4: "AT6302",
-            sub5: "AE6403",
-            sub6: "AE6404"
-          });
-        } else if (sems > 4) {
-          res.render("student", {
-            item: item
-          });
-        }
+          var j = items.length;
+          console.log(items[0].marks.length);
+          var x = items[0].marks.length - 1;
+          var sems = items[0].marks[x].semester,
+            dept = items[0].marks[x].dept,
+            item = items[0];
+          if (sems == 1) {
+            res.render("student", {
+              item: item,
+              sub1: "English1",
+              sub2: "Mathematics1",
+              sub3: "Physics1",
+              sub4: "Chemistry1",
+              sub5: "ComputerProgramming",
+              sub6: "EngineeringGraphics"
+            });
+          } else if (sems == 2 && dept == "ece") {
+            res.render("student", {
+              item: item,
+              sub1: "English2",
+              sub2: "Mathematics2",
+              sub3: "Physics2",
+              sub4: "Chemistry2",
+              sub5: "CircuitTheory",
+              sub6: "ED"
+            });
+          } else if (sems == 2 && dept == "eee") {
+            res.render("student", {
+              item: item,
+              sub1: "English2",
+              sub2: "Mathematics2",
+              sub3: "Physics2",
+              sub4: "Chemistry2",
+              sub5: "CircuitTheory",
+              sub6: "BCME"
+            });
+          } else if (sems == 2 && dept == "cse") {
+            res.render("student", {
+              item: item,
+              sub1: "English2",
+              sub2: "Mathematics2",
+              sub3: "Physics2",
+              sub4: "DPSD",
+              sub5: "PCE",
+              sub6: "BCME"
+            });
+          } else if (sems == 2 && dept == "mech") {
+            res.render("student", {
+              item: item,
+              sub1: "English2",
+              sub2: "Mathematics2",
+              sub3: "Physics2",
+              sub4: "Chemistry2",
+              sub5: "BEEE",
+              sub6: "EM"
+            });
+          } else if (sems == 2 && dept == "aero") {
+            res.render("student", {
+              item: item,
+              sub1: "English2",
+              sub2: "Mathematics2",
+              sub3: "Physics2",
+              sub4: "Chemistry2",
+              sub5: "BEEE",
+              sub6: "EM"
+            });
+          } else if (sems == 3 && dept == "ece") {
+            res.render("student", {
+              item: item,
+              sub1: "MA6351",
+              sub2: "EE6352",
+              sub3: "EC6301",
+              sub4: "EC6302",
+              sub5: "EC6303",
+              sub6: "EC6304"
+            });
+          } else if (sems == 3 && dept == "eee") {
+            res.render("student", {
+              item: item,
+              sub1: "MA8357",
+              sub2: "GE8351",
+              sub3: "EE8301",
+              sub4: "EE8302",
+              sub5: "EC8304",
+              sub6: "EE8304"
+            });
+          } else if (sems == 3 && dept == "cse") {
+            res.render("student", {
+              item: item,
+              sub1: "MA6351",
+              sub2: "CS6301",
+              sub3: "CS6302",
+              sub4: "CS6303",
+              sub5: "CS6304",
+              sub6: "GE6351"
+            });
+          } else if (sems == 3 && dept == "mech") {
+            res.render("student", {
+              item: item,
+              sub1: "MA6351",
+              sub2: "CE6306",
+              sub3: "ME6301",
+              sub4: "CE6451",
+              sub5: "ME6302",
+              sub6: "EE6351"
+            });
+          } else if (sems == 3 && dept == "aero") {
+            res.render("student", {
+              item: item,
+              sub1: "MA6351",
+              sub2: "ME6352",
+              sub3: "AE6301",
+              sub4: "CE6451",
+              sub5: "CE6452",
+              sub6: "AE6302"
+            });
+          } else if (sems == 4 && dept == "ece") {
+            res.render("student", {
+              item: item,
+              sub1: "MA6451",
+              sub2: "EC6401",
+              sub3: "EC6402",
+              sub4: "EC6403",
+              sub5: "EC6404",
+              sub6: "EC6405"
+            });
+          } else if (sems == 4 && dept == "eee") {
+            res.render("student", {
+              item: item,
+              sub1: "EC8404",
+              sub2: "EE8402",
+              sub3: "EE8403",
+              sub4: "EE8404",
+              sub5: "EE8405",
+              sub6: "EE8406"
+            });
+          } else if (sems == 4 && dept == "cse") {
+            res.render("student", {
+              item: item,
+              sub1: "MA6453 ",
+              sub2: "CS6551",
+              sub3: "CS6401",
+              sub4: "CS6402",
+              sub5: "EC6504",
+              sub6: "CS6403"
+            });
+          } else if (sems == 4 && dept == "mech") {
+            res.render("student", {
+              item: item,
+              sub1: "MA6452",
+              sub2: "ME6401",
+              sub3: "ME6402",
+              sub4: "ME6403",
+              sub5: "GE6351",
+              sub6: "ME6404"
+            });
+          } else if (sems == 4 && dept == "aero") {
+            res.render("student", {
+              item: item,
+              sub1: "MA6459",
+              sub2: "AE6401",
+              sub3: "AE6402",
+              sub4: "AT6302",
+              sub5: "AE6403",
+              sub6: "AE6404"
+            });
+          } else if (sems > 4) {
+            res.render("student", {
+              item: item
+            });
+          }
 
-        //                 else{
-        //                     x++;
-        //                     if(x==j){
-        //                      alert("Please enter a valid Register number");
-        //                     res.send("Hii");
-        //                    }}
+          //                 else{
+          //                     x++;
+          //                     if(x==j){
+          //                      alert("Please enter a valid Register number");
+          //                     res.send("Hii");
+          //                    }}
+        });
       });
-    });
-  });
+    }
+  );
 });
 
 function isLoggedIn(req, res, next) {
