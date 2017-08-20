@@ -16,7 +16,7 @@
           crossorigin="anonymous"></script>
         <script src="bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     </head>
-    <body class="img-responsive" style="background: url(kit.jpg); background-size: cover;">
+    <body class="img-responsive" style="background: url(de1.jpg); background-size: cover;">
 <!--============================================================================================================-->
                                         <!--  NavBar  -->
 <!--============================================================================================================-->
@@ -56,17 +56,22 @@
                 <li><a href="#">Exam Schedule</a></li>
                 <li><a href="/logout">Logout</a></li>
               </ul>
-            </div>
-            <center>
-            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                <h1 class="page-header" style="color:white">Profile</h1>
-                    <div class=" placeholder">
-                      <img src="pp.jpg" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-                      <h4 style="color:white"><%= item.name %></h4>
-                      <span class="text-muted">Dept : <%= item.dept %></span>
-                  </div>
               </div>
-            </center>
+                      <center>
+             <div class="ui container segment" style="width:35%; margin-top:2em;  margin-left:2em; margin-bottom: 1.5em">
+      <h1 class="ui header" style="margin : 0 auto;">Profile</h1><br>
+                  <div class=" placeholder">
+                      <img src="uploads/<%= item.pic %>" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail"><br>
+                        <h2 style="color:#ECCF9E;  text-align:center"><%= item.name %></h4>
+                        <h4 style="color:#ECCF9E;  text-align:center">Reg No: <%= item.regNo %></h4>
+                        <h4 style="color:#ECCF9E;  text-align:center">DOB: <%= item.dob %></h4>
+                        <h4 style="color:#ECCF9E;  text-align:center">Mobile: <%= item.mobile %></h4>
+                        <h4 style="color:#ECCF9E;  text-align:center">Blood Group: <%= item.bloodGroup %></h4>
+                        <h4 style="color:#ECCF9E;  text-align:center">Community: <%= item.community %></h4>
+                        <h4 style="color:#ECCF9E;  text-align:center">Dept: <%= item.dept %></h4>
+                        <h4 style="color:#ECCF9E;  text-align:center">Email: <%= item.Email %></h4>
+                  </div>
+            </center
           </div>
      </div>
 

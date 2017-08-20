@@ -444,20 +444,25 @@ app.get("/bluecard", (req, res) => {
             collection
               .find({ Email: emailVerify })
               .toArray(function(err, items) {
-                if (err) {
-                  {
-                    res.send("404 Error : No results found");
-                  }
-                }
+     //     if (err)
+     //         {
+     //              res.send("404 Error : No results found");
+     //           }
+      
                 var j = items.length;
-                if (j == 0) {
-                  res.send("No results found");
-                }
-                console.log(items[0].marks.length);
-                var x = items[0].marks.length - 1;
-                var sems = items[0].marks[x].semester,
+                 var x = items[0].marks.length - 1;
+    //        if (x=  -1) {
+    //             res.send("No results found");
+    //           }
+                console.log(x)
+                 var sems = items[0].marks[x].semester,
                   dept = items[0].marks[x].dept,
                   item = items[0];
+                
+               
+                console.log(x)
+                
+               
                 if (sems == 1) {
                   res.render("student", {
                     item: item,
