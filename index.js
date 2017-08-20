@@ -316,73 +316,78 @@ app.post(
       password = req.body.pwd;
     var id = req.params.id;
     console.log(regNo);
-    user.updatePassword(password).then(function() {
-      console.log("pwd sent.");
-      firebase
-        .database()
-        .ref("users/" + userId)
-        .update({
-          name: name,
-          email: Email,
-          pic: pic,
-          regNo: regNo,
-          address: address,
-          dept: dept,
-          bloodGroup: bloodGroup,
-          community: community,
-          username: username,
-          mobile: mobile,
-          dob: dob
-        })
-        .then(() => {
-          var item = {
+    var item = {
+      name: name,
+      address: address,
+      Email: Email,
+      regNo: regNo,
+      dept: dept,
+      bloodGroup: bloodGroup,
+      community: community,
+      dob: dob,
+      mobile: mobile,
+      username: username,
+      pic: pic
+    };
+    user
+      .updatePassword(password)
+      .catch(() => {
+        res.render("editpagestudent", {
+          error: "Password must be atleast 6 characters",
+          item: item
+        });
+      })
+      .then(function() {
+        console.log("pwd sent.");
+        firebase
+          .database()
+          .ref("users/" + userId)
+          .update({
             name: name,
-            address: address,
-            Email: Email,
+            email: Email,
+            pic: pic,
             regNo: regNo,
+            address: address,
             dept: dept,
             bloodGroup: bloodGroup,
             community: community,
-            dob: dob,
-            mobile: mobile,
             username: username,
-            pic: pic
-          };
-          //               ======================================
-          //               Here mongodb la update vakka paaru
-          //               =====================================
-          MongoClient.connect(
-            "mongodb://localhost/kit" || process.env.MONGODB_URI,
-            (err, db) => {
-              db.collection("students", function(err, collection) {
-                collection.findOneAndUpdate(
-                  { regNo: regNo },
-                  {
-                    $set: {
-                      name: name,
-                      address: address,
-                      Email: Email,
-                      regNo: regNo,
-                      dept: dept,
-                      bloodGroup: bloodGroup,
-                      community: community,
-                      dob: dob,
-                      mobile: mobile,
-                      username: username,
-                      pic: pic
+            mobile: mobile,
+            dob: dob
+          })
+          .then(() => {
+            MongoClient.connect(
+              "mongodb://localhost/kit" || process.env.MONGODB_URI,
+              (err, db) => {
+                db.collection("students", function(err, collection) {
+                  collection.findOneAndUpdate(
+                    { regNo: regNo },
+                    {
+                      $set: {
+                        name: name,
+                        address: address,
+                        Email: Email,
+                        regNo: regNo,
+                        dept: dept,
+                        bloodGroup: bloodGroup,
+                        community: community,
+                        dob: dob,
+                        mobile: mobile,
+                        username: username,
+                        pic: pic
+                      }
+                    },
+                    { returnOriginal: false, upsert: true },
+                    (err, item) => {
+                      console.log(item.value);
+                      res.render("home", { item: item.value });
                     }
-                  },
-                  { returnOriginal: false, upsert: true },
-                  (err, item) => {
-                    console.log(item.value);
-                    res.render("home", { item: item.value });
-                  }
-                );
-              });
-            }
-          );
-        });
-    });
+                  );
+                });
+              }
+            );
+          });
+      });
   },
   function(error) {
     // An error happened.
@@ -444,189 +449,181 @@ app.get("/bluecard", (req, res) => {
             collection
               .find({ Email: emailVerify })
               .toArray(function(err, items) {
-     //     if (err)
-     //         {
-     //              res.send("404 Error : No results found");
-     //           }
-      
-                var j = items.length;
-                 var x = items[0].marks.length - 1;
-    //        if (x=  -1) {
-    //             res.send("No results found");
-    //           }
-                console.log(x)
-                 var sems = items[0].marks[x].semester,
-                  dept = items[0].marks[x].dept,
-                  item = items[0];
-                
-               
-                console.log(x)
-                
-               
-                if (sems == 1) {
-                  res.render("student", {
-                    item: item,
-                    sub1: "English1",
-                    sub2: "Mathematics1",
-                    sub3: "Physics1",
-                    sub4: "Chemistry1",
-                    sub5: "ComputerProgramming",
-                    sub6: "EngineeringGraphics"
-                  });
-                } else if (sems == 2 && dept == "ece") {
-                  res.render("student", {
-                    item: item,
-                    sub1: "English2",
-                    sub2: "Mathematics2",
-                    sub3: "Physics2",
-                    sub4: "Chemistry2",
-                    sub5: "CircuitTheory",
-                    sub6: "ED"
-                  });
-                } else if (sems == 2 && dept == "eee") {
-                  res.render("student", {
-                    item: item,
-                    sub1: "English2",
-                    sub2: "Mathematics2",
-                    sub3: "Physics2",
-                    sub4: "Chemistry2",
-                    sub5: "CircuitTheory",
-                    sub6: "BCME"
-                  });
-                } else if (sems == 2 && dept == "cse") {
-                  res.render("student", {
-                    item: item,
-                    sub1: "English2",
-                    sub2: "Mathematics2",
-                    sub3: "Physics2",
-                    sub4: "DPSD",
-                    sub5: "PCE",
-                    sub6: "BCME"
-                  });
-                } else if (sems == 2 && dept == "mech") {
-                  res.render("student", {
-                    item: item,
-                    sub1: "English2",
-                    sub2: "Mathematics2",
-                    sub3: "Physics2",
-                    sub4: "Chemistry2",
-                    sub5: "BEEE",
-                    sub6: "EM"
-                  });
-                } else if (sems == 2 && dept == "aero") {
-                  res.render("student", {
-                    item: item,
-                    sub1: "English2",
-                    sub2: "Mathematics2",
-                    sub3: "Physics2",
-                    sub4: "Chemistry2",
-                    sub5: "BEEE",
-                    sub6: "EM"
-                  });
-                } else if (sems == 3 && dept == "ece") {
-                  res.render("student", {
-                    item: item,
-                    sub1: "MA6351",
-                    sub2: "EE6352",
-                    sub3: "EC6301",
-                    sub4: "EC6302",
-                    sub5: "EC6303",
-                    sub6: "EC6304"
-                  });
-                } else if (sems == 3 && dept == "eee") {
-                  res.render("student", {
-                    item: item,
-                    sub1: "MA8357",
-                    sub2: "GE8351",
-                    sub3: "EE8301",
-                    sub4: "EE8302",
-                    sub5: "EC8304",
-                    sub6: "EE8304"
-                  });
-                } else if (sems == 3 && dept == "cse") {
-                  res.render("student", {
-                    item: item,
-                    sub1: "MA6351",
-                    sub2: "CS6301",
-                    sub3: "CS6302",
-                    sub4: "CS6303",
-                    sub5: "CS6304",
-                    sub6: "GE6351"
-                  });
-                } else if (sems == 3 && dept == "mech") {
-                  res.render("student", {
-                    item: item,
-                    sub1: "MA6351",
-                    sub2: "CE6306",
-                    sub3: "ME6301",
-                    sub4: "CE6451",
-                    sub5: "ME6302",
-                    sub6: "EE6351"
-                  });
-                } else if (sems == 3 && dept == "aero") {
-                  res.render("student", {
-                    item: item,
-                    sub1: "MA6351",
-                    sub2: "ME6352",
-                    sub3: "AE6301",
-                    sub4: "CE6451",
-                    sub5: "CE6452",
-                    sub6: "AE6302"
-                  });
-                } else if (sems == 4 && dept == "ece") {
-                  res.render("student", {
-                    item: item,
-                    sub1: "MA6451",
-                    sub2: "EC6401",
-                    sub3: "EC6402",
-                    sub4: "EC6403",
-                    sub5: "EC6404",
-                    sub6: "EC6405"
-                  });
-                } else if (sems == 4 && dept == "eee") {
-                  res.render("student", {
-                    item: item,
-                    sub1: "EC8404",
-                    sub2: "EE8402",
-                    sub3: "EE8403",
-                    sub4: "EE8404",
-                    sub5: "EE8405",
-                    sub6: "EE8406"
-                  });
-                } else if (sems == 4 && dept == "cse") {
-                  res.render("student", {
-                    item: item,
-                    sub1: "MA6453 ",
-                    sub2: "CS6551",
-                    sub3: "CS6401",
-                    sub4: "CS6402",
-                    sub5: "EC6504",
-                    sub6: "CS6403"
-                  });
-                } else if (sems == 4 && dept == "mech") {
-                  res.render("student", {
-                    item: item,
-                    sub1: "MA6452",
-                    sub2: "ME6401",
-                    sub3: "ME6402",
-                    sub4: "ME6403",
-                    sub5: "GE6351",
-                    sub6: "ME6404"
-                  });
-                } else if (sems == 4 && dept == "aero") {
-                  res.render("student", {
-                    item: item,
-                    sub1: "MA6459",
-                    sub2: "AE6401",
-                    sub3: "AE6402",
-                    sub4: "AT6302",
-                    sub5: "AE6403",
-                    sub6: "AE6404"
-                  });
-                } else if (sems > 4) {
-                  res.render("student", {
-                    item: item
-                  });
+                var j = items[0].marks.length;
+                if (j == 0) {
+                  res.redirect("/home");
+                } else {
+                  var x = items[0].marks.length - 1;
+                  console.log(x);
+                  var sems = items[0].marks[x].semester,
+                    dept = items[0].marks[x].dept,
+                    item = items[0];
+
+                  if (sems == 1) {
+                    res.render("student", {
+                      item: item,
+                      sub1: "English1",
+                      sub2: "Mathematics1",
+                      sub3: "Physics1",
+                      sub4: "Chemistry1",
+                      sub5: "ComputerProgramming",
+                      sub6: "EngineeringGraphics"
+                    });
+                  } else if (sems == 2 && dept == "ece") {
+                    res.render("student", {
+                      item: item,
+                      sub1: "English2",
+                      sub2: "Mathematics2",
+                      sub3: "Physics2",
+                      sub4: "Chemistry2",
+                      sub5: "CircuitTheory",
+                      sub6: "ED"
+                    });
+                  } else if (sems == 2 && dept == "eee") {
+                    res.render("student", {
+                      item: item,
+                      sub1: "English2",
+                      sub2: "Mathematics2",
+                      sub3: "Physics2",
+                      sub4: "Chemistry2",
+                      sub5: "CircuitTheory",
+                      sub6: "BCME"
+                    });
+                  } else if (sems == 2 && dept == "cse") {
+                    res.render("student", {
+                      item: item,
+                      sub1: "English2",
+                      sub2: "Mathematics2",
+                      sub3: "Physics2",
+                      sub4: "DPSD",
+                      sub5: "PCE",
+                      sub6: "BCME"
+                    });
+                  } else if (sems == 2 && dept == "mech") {
+                    res.render("student", {
+                      item: item,
+                      sub1: "English2",
+                      sub2: "Mathematics2",
+                      sub3: "Physics2",
+                      sub4: "Chemistry2",
+                      sub5: "BEEE",
+                      sub6: "EM"
+                    });
+                  } else if (sems == 2 && dept == "aero") {
+                    res.render("student", {
+                      item: item,
+                      sub1: "English2",
+                      sub2: "Mathematics2",
+                      sub3: "Physics2",
+                      sub4: "Chemistry2",
+                      sub5: "BEEE",
+                      sub6: "EM"
+                    });
+                  } else if (sems == 3 && dept == "ece") {
+                    res.render("student", {
+                      item: item,
+                      sub1: "MA6351",
+                      sub2: "EE6352",
+                      sub3: "EC6301",
+                      sub4: "EC6302",
+                      sub5: "EC6303",
+                      sub6: "EC6304"
+                    });
+                  } else if (sems == 3 && dept == "eee") {
+                    res.render("student", {
+                      item: item,
+                      sub1: "MA8357",
+                      sub2: "GE8351",
+                      sub3: "EE8301",
+                      sub4: "EE8302",
+                      sub5: "EC8304",
+                      sub6: "EE8304"
+                    });
+                  } else if (sems == 3 && dept == "cse") {
+                    res.render("student", {
+                      item: item,
+                      sub1: "MA6351",
+                      sub2: "CS6301",
+                      sub3: "CS6302",
+                      sub4: "CS6303",
+                      sub5: "CS6304",
+                      sub6: "GE6351"
+                    });
+                  } else if (sems == 3 && dept == "mech") {
+                    res.render("student", {
+                      item: item,
+                      sub1: "MA6351",
+                      sub2: "CE6306",
+                      sub3: "ME6301",
+                      sub4: "CE6451",
+                      sub5: "ME6302",
+                      sub6: "EE6351"
+                    });
+                  } else if (sems == 3 && dept == "aero") {
+                    res.render("student", {
+                      item: item,
+                      sub1: "MA6351",
+                      sub2: "ME6352",
+                      sub3: "AE6301",
+                      sub4: "CE6451",
+                      sub5: "CE6452",
+                      sub6: "AE6302"
+                    });
+                  } else if (sems == 4 && dept == "ece") {
+                    res.render("student", {
+                      item: item,
+                      sub1: "MA6451",
+                      sub2: "EC6401",
+                      sub3: "EC6402",
+                      sub4: "EC6403",
+                      sub5: "EC6404",
+                      sub6: "EC6405"
+                    });
+                  } else if (sems == 4 && dept == "eee") {
+                    res.render("student", {
+                      item: item,
+                      sub1: "EC8404",
+                      sub2: "EE8402",
+                      sub3: "EE8403",
+                      sub4: "EE8404",
+                      sub5: "EE8405",
+                      sub6: "EE8406"
+                    });
+                  } else if (sems == 4 && dept == "cse") {
+                    res.render("student", {
+                      item: item,
+                      sub1: "MA6453 ",
+                      sub2: "CS6551",
+                      sub3: "CS6401",
+                      sub4: "CS6402",
+                      sub5: "EC6504",
+                      sub6: "CS6403"
+                    });
+                  } else if (sems == 4 && dept == "mech") {
+                    res.render("student", {
+                      item: item,
+                      sub1: "MA6452",
+                      sub2: "ME6401",
+                      sub3: "ME6402",
+                      sub4: "ME6403",
+                      sub5: "GE6351",
+                      sub6: "ME6404"
+                    });
+                  } else if (sems == 4 && dept == "aero") {
+                    res.render("student", {
+                      item: item,
+                      sub1: "MA6459",
+                      sub2: "AE6401",
+                      sub3: "AE6402",
+                      sub4: "AT6302",
+                      sub5: "AE6403",
+                      sub6: "AE6404"
+                    });
+                  } else if (sems > 4) {
+                    res.render("student", {
+                      item: item
+                    });
+                  }
                 }
               });
           });
@@ -726,185 +723,180 @@ app.get("/:id/academics", (req, res) => {
           if (err) {
             res.send("404 : No results found");
           }
-
-          var j = items.length;
-          console.log(items[0].marks.length);
-          var x = items[0].marks.length - 1;
-          var sems = items[0].marks[x].semester,
-            dept = items[0].marks[x].dept,
-            item = items[0];
-          if (sems == 1) {
-            res.render("student", {
-              item: item,
-              sub1: "English1",
-              sub2: "Mathematics1",
-              sub3: "Physics1",
-              sub4: "Chemistry1",
-              sub5: "ComputerProgramming",
-              sub6: "EngineeringGraphics"
-            });
-          } else if (sems == 2 && dept == "ece") {
-            res.render("student", {
-              item: item,
-              sub1: "English2",
-              sub2: "Mathematics2",
-              sub3: "Physics2",
-              sub4: "Chemistry2",
-              sub5: "CircuitTheory",
-              sub6: "ED"
-            });
-          } else if (sems == 2 && dept == "eee") {
-            res.render("student", {
-              item: item,
-              sub1: "English2",
-              sub2: "Mathematics2",
-              sub3: "Physics2",
-              sub4: "Chemistry2",
-              sub5: "CircuitTheory",
-              sub6: "BCME"
-            });
-          } else if (sems == 2 && dept == "cse") {
-            res.render("student", {
-              item: item,
-              sub1: "English2",
-              sub2: "Mathematics2",
-              sub3: "Physics2",
-              sub4: "DPSD",
-              sub5: "PCE",
-              sub6: "BCME"
-            });
-          } else if (sems == 2 && dept == "mech") {
-            res.render("student", {
-              item: item,
-              sub1: "English2",
-              sub2: "Mathematics2",
-              sub3: "Physics2",
-              sub4: "Chemistry2",
-              sub5: "BEEE",
-              sub6: "EM"
-            });
-          } else if (sems == 2 && dept == "aero") {
-            res.render("student", {
-              item: item,
-              sub1: "English2",
-              sub2: "Mathematics2",
-              sub3: "Physics2",
-              sub4: "Chemistry2",
-              sub5: "BEEE",
-              sub6: "EM"
-            });
-          } else if (sems == 3 && dept == "ece") {
-            res.render("student", {
-              item: item,
-              sub1: "MA6351",
-              sub2: "EE6352",
-              sub3: "EC6301",
-              sub4: "EC6302",
-              sub5: "EC6303",
-              sub6: "EC6304"
-            });
-          } else if (sems == 3 && dept == "eee") {
-            res.render("student", {
-              item: item,
-              sub1: "MA8357",
-              sub2: "GE8351",
-              sub3: "EE8301",
-              sub4: "EE8302",
-              sub5: "EC8304",
-              sub6: "EE8304"
-            });
-          } else if (sems == 3 && dept == "cse") {
-            res.render("student", {
-              item: item,
-              sub1: "MA6351",
-              sub2: "CS6301",
-              sub3: "CS6302",
-              sub4: "CS6303",
-              sub5: "CS6304",
-              sub6: "GE6351"
-            });
-          } else if (sems == 3 && dept == "mech") {
-            res.render("student", {
-              item: item,
-              sub1: "MA6351",
-              sub2: "CE6306",
-              sub3: "ME6301",
-              sub4: "CE6451",
-              sub5: "ME6302",
-              sub6: "EE6351"
-            });
-          } else if (sems == 3 && dept == "aero") {
-            res.render("student", {
-              item: item,
-              sub1: "MA6351",
-              sub2: "ME6352",
-              sub3: "AE6301",
-              sub4: "CE6451",
-              sub5: "CE6452",
-              sub6: "AE6302"
-            });
-          } else if (sems == 4 && dept == "ece") {
-            res.render("student", {
-              item: item,
-              sub1: "MA6451",
-              sub2: "EC6401",
-              sub3: "EC6402",
-              sub4: "EC6403",
-              sub5: "EC6404",
-              sub6: "EC6405"
-            });
-          } else if (sems == 4 && dept == "eee") {
-            res.render("student", {
-              item: item,
-              sub1: "EC8404",
-              sub2: "EE8402",
-              sub3: "EE8403",
-              sub4: "EE8404",
-              sub5: "EE8405",
-              sub6: "EE8406"
-            });
-          } else if (sems == 4 && dept == "cse") {
-            res.render("student", {
-              item: item,
-              sub1: "MA6453 ",
-              sub2: "CS6551",
-              sub3: "CS6401",
-              sub4: "CS6402",
-              sub5: "EC6504",
-              sub6: "CS6403"
-            });
-          } else if (sems == 4 && dept == "mech") {
-            res.render("student", {
-              item: item,
-              sub1: "MA6452",
-              sub2: "ME6401",
-              sub3: "ME6402",
-              sub4: "ME6403",
-              sub5: "GE6351",
-              sub6: "ME6404"
-            });
-          } else if (sems == 4 && dept == "aero") {
-            res.render("student", {
-              item: item,
-              sub1: "MA6459",
-              sub2: "AE6401",
-              sub3: "AE6402",
-              sub4: "AT6302",
-              sub5: "AE6403",
-              sub6: "AE6404"
-            });
-          } else if (sems > 4) {
-            res.render("student", {
-              item: item
-            });
+          var j = items[0].marks.length;
+          if (j == 0) {
+            res.send("No Results Found");
+          } else {
+            var x = items[0].marks.length - 1;
+            var sems = items[0].marks[x].semester,
+              dept = items[0].marks[x].dept,
+              item = items[0];
+            if (sems == 1) {
+              res.render("student", {
+                item: item,
+                sub1: "English1",
+                sub2: "Mathematics1",
+                sub3: "Physics1",
+                sub4: "Chemistry1",
+                sub5: "ComputerProgramming",
+                sub6: "EngineeringGraphics"
+              });
+            } else if (sems == 2 && dept == "ece") {
+              res.render("student", {
+                item: item,
+                sub1: "English2",
+                sub2: "Mathematics2",
+                sub3: "Physics2",
+                sub4: "Chemistry2",
+                sub5: "CircuitTheory",
+                sub6: "ED"
+              });
+            } else if (sems == 2 && dept == "eee") {
+              res.render("student", {
+                item: item,
+                sub1: "English2",
+                sub2: "Mathematics2",
+                sub3: "Physics2",
+                sub4: "Chemistry2",
+                sub5: "CircuitTheory",
+                sub6: "BCME"
+              });
+            } else if (sems == 2 && dept == "cse") {
+              res.render("student", {
+                item: item,
+                sub1: "English2",
+                sub2: "Mathematics2",
+                sub3: "Physics2",
+                sub4: "DPSD",
+                sub5: "PCE",
+                sub6: "BCME"
+              });
+            } else if (sems == 2 && dept == "mech") {
+              res.render("student", {
+                item: item,
+                sub1: "English2",
+                sub2: "Mathematics2",
+                sub3: "Physics2",
+                sub4: "Chemistry2",
+                sub5: "BEEE",
+                sub6: "EM"
+              });
+            } else if (sems == 2 && dept == "aero") {
+              res.render("student", {
+                item: item,
+                sub1: "English2",
+                sub2: "Mathematics2",
+                sub3: "Physics2",
+                sub4: "Chemistry2",
+                sub5: "BEEE",
+                sub6: "EM"
+              });
+            } else if (sems == 3 && dept == "ece") {
+              res.render("student", {
+                item: item,
+                sub1: "MA6351",
+                sub2: "EE6352",
+                sub3: "EC6301",
+                sub4: "EC6302",
+                sub5: "EC6303",
+                sub6: "EC6304"
+              });
+            } else if (sems == 3 && dept == "eee") {
+              res.render("student", {
+                item: item,
+                sub1: "MA8357",
+                sub2: "GE8351",
+                sub3: "EE8301",
+                sub4: "EE8302",
+                sub5: "EC8304",
+                sub6: "EE8304"
+              });
+            } else if (sems == 3 && dept == "cse") {
+              res.render("student", {
+                item: item,
+                sub1: "MA6351",
+                sub2: "CS6301",
+                sub3: "CS6302",
+                sub4: "CS6303",
+                sub5: "CS6304",
+                sub6: "GE6351"
+              });
+            } else if (sems == 3 && dept == "mech") {
+              res.render("student", {
+                item: item,
+                sub1: "MA6351",
+                sub2: "CE6306",
+                sub3: "ME6301",
+                sub4: "CE6451",
+                sub5: "ME6302",
+                sub6: "EE6351"
+              });
+            } else if (sems == 3 && dept == "aero") {
+              res.render("student", {
+                item: item,
+                sub1: "MA6351",
+                sub2: "ME6352",
+                sub3: "AE6301",
+                sub4: "CE6451",
+                sub5: "CE6452",
+                sub6: "AE6302"
+              });
+            } else if (sems == 4 && dept == "ece") {
+              res.render("student", {
+                item: item,
+                sub1: "MA6451",
+                sub2: "EC6401",
+                sub3: "EC6402",
+                sub4: "EC6403",
+                sub5: "EC6404",
+                sub6: "EC6405"
+              });
+            } else if (sems == 4 && dept == "eee") {
+              res.render("student", {
+                item: item,
+                sub1: "EC8404",
+                sub2: "EE8402",
+                sub3: "EE8403",
+                sub4: "EE8404",
+                sub5: "EE8405",
+                sub6: "EE8406"
+              });
+            } else if (sems == 4 && dept == "cse") {
+              res.render("student", {
+                item: item,
+                sub1: "MA6453 ",
+                sub2: "CS6551",
+                sub3: "CS6401",
+                sub4: "CS6402",
+                sub5: "EC6504",
+                sub6: "CS6403"
+              });
+            } else if (sems == 4 && dept == "mech") {
+              res.render("student", {
+                item: item,
+                sub1: "MA6452",
+                sub2: "ME6401",
+                sub3: "ME6402",
+                sub4: "ME6403",
+                sub5: "GE6351",
+                sub6: "ME6404"
+              });
+            } else if (sems == 4 && dept == "aero") {
+              res.render("student", {
+                item: item,
+                sub1: "MA6459",
+                sub2: "AE6401",
+                sub3: "AE6402",
+                sub4: "AT6302",
+                sub5: "AE6403",
+                sub6: "AE6404"
+              });
+            } else if (sems > 4) {
+              res.render("student", {
+                item: item
+              });
+            }
           }
-
-          //                 else{
-          //                     x++;
-          //                     if(x==j){
-          //                      alert("Please enter a valid Register number");
-          //                     res.send("Hii");
-          //                    }}
         });
       });
     }
