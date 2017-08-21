@@ -1,6 +1,3 @@
-College students app
-    ->Guru2402
+College students app:
 
-
-
-     
+    -->Guru2402 
