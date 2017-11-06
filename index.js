@@ -1,14 +1,13 @@
-var express = require("express"),
-  bodyParser = require("body-parser"),
+var ejs = require("ejs"),
+  bcrypt = require("bcrypt"),
+  crypto = require("crypto"),
+  express = require("express"),
   mongoose = require("mongoose"),
-  ejs = require("ejs"),
   user = require("./models/user"),
-  firebase = require("firebase"),
   flash = require("connect-flash"),
-  passport = require("passport"),
-  passportLocal = require("passport-local"),
+  bodyParser = require("body-parser"),
   expressSession = require("express-session"),
-  passportLocalMongoose = require("passport-local-mongoose");
+  expressValidator = require("express-validator");
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/kit-app");
 mongoose.Promise = global.Promise;
@@ -16,17 +15,10 @@ var app = express();
 var MongoClient = require("mongodb").MongoClient;
 var port = process.env.PORT || 5000;
 
+app.use(expressValidator());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static("public"));
-
-app.use(
-  require("express-session")({
-    secret: "Guru did the app!",
-    resave: false,
-    saveUninitialized: false
-  })
-);
 
 var multer = require("multer");
 const storage = multer.diskStorage({
@@ -41,29 +33,7 @@ const upload = multer({ storage: storage });
 
 app.use(bodyParser.json());
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-passport.use(new passportLocal(user.authenticate()));
-passport.serializeUser(user.serializeUser());
-passport.deserializeUser(user.deserializeUser());
-
 app.use(flash());
-
-app.use(function(req, res, next) {
-  res.locals.currentUser = req.user;
-  res.locals.success = req.flash("success");
-  res.locals.errors = req.flash("error");
-  next();
-});
-
-var config = {
-  apiKey: "AIzaSyDaZrNpHcu4BV-q461etow-owR5BSwbj0U",
-  authDomain: "neruppu-daw.firebaseapp.com",
-  databaseURL: "https://neruppu-daw.firebaseio.com/",
-  storageBucket: "gs://neruppu-daw.appspot.com/"
-};
-firebase.initializeApp(config);
 
 var markSchema = new mongoose.Schema({
   name: String,
@@ -82,8 +52,8 @@ var markSchema = new mongoose.Schema({
 var studentsSchema = new mongoose.Schema({
   name: String,
   address: String,
-  Email: String,
-  regNo: String,
+  email: String,
+  regNo: { type: String, unique: true },
   dept: String,
   dob: String,
   mobile: String,
@@ -94,6 +64,10 @@ var studentsSchema = new mongoose.Schema({
   pic: String,
   marks: [markSchema]
 });
+
+studentsSchema.methods.comparePassword = function(password) {
+  return bcrypt.compareSync(password, this.password);
+};
 
 var students = mongoose.model("students", studentsSchema);
 
@@ -111,20 +85,24 @@ app.get("/students", (req, res) => {
 });
 
 app.post("/students", upload.single("pic"), (req, res) => {
-  var name = req.body.name,
-    address = req.body.address,
-    mobile = req.body.mobile,
-    dob = req.body.dob,
-    email = req.body.email,
-    regNo = req.body.regNo,
-    bloodGroup = req.body.bloodGroup,
-    community = req.body.community,
-    pic = req.file.originalname,
-    dept = req.body.dept,
-    username = req.body.username,
-    password = req.body.pwd;
-
-  students.find({ regNo: regNo }, function(err, student) {
+  req
+    .assert("email", "Please check your email id")
+    .notEmpty()
+    .isEmail();
+  req
+    .assert("mobile", "Please check your mobile Number")
+    .isNumeric()
+    .len(10, 10);
+  req
+    .assert("pwd", "Password must be 5-20 characters")
+    .notEmpty()
+    .len(5, 20);
+  var errors = req.validationErrors();
+  if (errors) {
+    console.log(errors);
+    return res.render("students", { error: JSON.stringify(errors) });
+  }
+  students.find({ regNo: req.body.regNo }, function(err, student) {
     if (err) {
       res.render("students", { error: "Something went wrong" });
     }
@@ -133,60 +111,16 @@ app.post("/students", upload.single("pic"), (req, res) => {
         error: "The Register Number is already used by someone else"
       });
     } else {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then(() => {
-          var user = firebase.auth().currentUser,
-            userId = user.uid;
-          firebase
-            .database()
-            .ref("users/" + userId)
-            .set({
-              name: name,
-              email: email,
-              pic: pic,
-              regNo: regNo,
-              address: address,
-              dept: dept,
-              bloodGroup: bloodGroup,
-              community: community,
-              username: username,
-              mobile: mobile,
-              dob: dob
-            })
-            .then(() => {
-              var item = {
-                name: name,
-                address: address,
-                Email: email,
-                regNo: regNo,
-                dept: dept,
-                bloodGroup: bloodGroup,
-                community: community,
-                dob: dob,
-                mobile: mobile,
-                username: username,
-                pic: pic
-              };
-              students.create(item, (err, created) => {
-                if (err) {
-                  console.log(err);
-                  res.render("students", { error: "Something went wrong" });
-                }
-                console.log(item);
-                res.redirect("/home");
-              });
-            })
-            .catch(() => {
-              console.log("Data is not stored on mongodb" + error);
-              res.render("students", { error: "Something went wrong" });
-            });
-        })
-        .catch(function(error) {
-          console.log(error);
+      var newStudent = new students(req.body);
+      newStudent.password = bcrypt.hashSync(req.body.pwd, 10);
+      students.save(newStudent, (err, created) => {
+        if (err) {
+          console.log(err);
           res.render("students", { error: "Something went wrong" });
-        });
+        }
+        console.log(newStudent);
+        res.redirect("/home");
+      });
     }
   });
 });
@@ -201,8 +135,8 @@ app.get("/register", (req, res) => {
 
 app.get("/editprofile", (req, res) => {
   firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-      var user = firebase.auth().currentUser;
+    if (req.user) {
+      var user = req.user;
       var emailVerify = user.email;
       MongoClient.connect(
         process.env.MONGODB_URI || "mongodb://localhost/kit-app",
@@ -220,6 +154,7 @@ app.get("/editprofile", (req, res) => {
                 }
               }
             });
+            db.close();
           });
         }
       );
@@ -230,7 +165,7 @@ app.get("/editprofile", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  var newUser = new user({ username: req.body.username });
+  var newUser = new user({ username: req.body.username, isAdmin: true });
   user.register(newUser, req.body.password, (err, user) => {
     if (err) {
       console.log(err);
@@ -242,14 +177,14 @@ app.post("/register", (req, res) => {
   });
 });
 
-app.post(
-  "/stafflogin",
-  passport.authenticate("local", {
-    successRedirect: "/staffpage",
-    failureRedirect: "/stafflog"
-  }),
-  (req, res) => {}
-);
+// app.post(
+//   "/stafflogin",
+//   passport.authenticate("local", {
+//     successRedirect: "/staffpage",
+//     failureRedirect: "/stafflog"
+//   }),
+//   (req, res) => {}
+// );
 
 app.get("/stafflog", (req, res) => {
   res.render("stafflogin", { error: "Please check your user credentials" });
@@ -295,6 +230,7 @@ app.get("/home", (req, res) => {
                 }
               }
             });
+            db.close();
           });
         }
       );
@@ -391,6 +327,7 @@ app.post(
                       res.render("home", { item: item.value });
                     }
                   );
+                  db.close();
                 });
               }
             );
@@ -430,6 +367,7 @@ app.post("/staffsearch", (req, res) => {
               }
             }
           }
+          db.close();
         });
       });
     }
@@ -633,6 +571,7 @@ app.get("/bluecard", (req, res) => {
                     });
                   }
                 }
+                db.close();
               });
           });
         }
@@ -711,6 +650,7 @@ app.post("/mark", (req, res) => {
               res.render("markentry", { error: "Marks Saved" });
             });
         }
+        db.close();
       });
     }
   );
@@ -905,6 +845,7 @@ app.get("/:id/academics", (req, res) => {
               });
             }
           }
+          db.close();
         });
       });
     }
