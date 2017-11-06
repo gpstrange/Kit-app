@@ -2,12 +2,16 @@ var ejs = require("ejs"),
   bcrypt = require("bcrypt"),
   crypto = require("crypto"),
   express = require("express"),
+  jwt = require("jsonwebtoken"),
+  passport = require("passport"),
   mongoose = require("mongoose"),
   user = require("./models/user"),
   flash = require("connect-flash"),
   bodyParser = require("body-parser"),
+  passportLocal = require("passport-local"),
   expressSession = require("express-session"),
-  expressValidator = require("express-validator");
+  expressValidator = require("express-validator"),
+  passportLocalMongoose = require("passport-local-mongoose");
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/kit-app");
 mongoose.Promise = global.Promise;
@@ -15,6 +19,16 @@ var app = express();
 var MongoClient = require("mongodb").MongoClient;
 var port = process.env.PORT || 5000;
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(
+  require("express-session")({
+    secret: "Guru did the app!",
+    resave: false,
+    saveUninitialized: false
+  })
+);
 app.use(expressValidator());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
@@ -65,11 +79,16 @@ var studentsSchema = new mongoose.Schema({
   marks: [markSchema]
 });
 
-studentsSchema.methods.comparePassword = function(password) {
-  return bcrypt.compareSync(password, this.password);
-};
+// studentsSchema.methods.comparePassword = function(password) {
+//   return bcrypt.compareSync(password, this.password);
+// };
+studentsSchema.plugin(passportLocalMongoose);
 
 var students = mongoose.model("students", studentsSchema);
+
+passport.use(new passportLocal(students.authenticate()));
+passport.serializeUser(students.serializeUser());
+passport.deserializeUser(students.deserializeUser());
 
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
@@ -85,6 +104,31 @@ app.get("/students", (req, res) => {
 });
 
 app.post("/students", upload.single("pic"), (req, res) => {
+  var name = req.body.name,
+    address = req.body.address,
+    mobile = req.body.mobile,
+    dob = req.body.dob,
+    email = req.body.email,
+    regNo = req.body.regNo,
+    pic = req.file.originalname,
+    community = req.body.community,
+    bloodGroup = req.body.bloodGroup,
+    dept = req.body.dept,
+    username = req.body.username;
+
+  var Student = {
+    name: name,
+    address: address,
+    email: email,
+    regNo: regNo,
+    dept: dept,
+    bloodGroup: bloodGroup,
+    community: community,
+    dob: dob,
+    mobile: mobile,
+    username: username,
+    pic: pic
+  };
   req
     .assert("email", "Please check your email id")
     .notEmpty()
@@ -97,6 +141,10 @@ app.post("/students", upload.single("pic"), (req, res) => {
     .assert("pwd", "Password must be 5-20 characters")
     .notEmpty()
     .len(5, 20);
+  req
+    .assert("regNo", "RegisterNumber must be 12 characters")
+    .notEmpty()
+    .len(12, 12);
   var errors = req.validationErrors();
   if (errors) {
     console.log(errors);
@@ -111,15 +159,17 @@ app.post("/students", upload.single("pic"), (req, res) => {
         error: "The Register Number is already used by someone else"
       });
     } else {
-      var newStudent = new students(req.body);
-      newStudent.password = bcrypt.hashSync(req.body.pwd, 10);
-      students.save(newStudent, (err, created) => {
+      var newStudent = new students(Student);
+      students.register(newStudent, req.body.pwd, (err, created) => {
         if (err) {
           console.log(err);
           res.render("students", { error: "Something went wrong" });
         }
-        console.log(newStudent);
-        res.redirect("/home");
+        console.log(created);
+        req.login({ regNo: regNo, password: req.body.pwd }, () => {
+          console.log(req.user);
+          res.redirect("/home");
+        });
       });
     }
   });
@@ -195,49 +245,53 @@ app.get("/staffpage", isLoggedIn, (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  var email = req.body.username,
-    password = req.body.pwd;
-  firebase
-    .auth()
-    .signInWithEmailAndPassword(email, password)
-    .then(() => {
-      res.redirect("/home");
-    })
-    .catch(() => {
-      console.log("Error");
-      res.render("index", { error: "Please check your user credentials" });
-    });
+  students.findOne(
+    {
+      email: req.body.username
+    },
+    function(err, user) {
+      if (!user || !user.comparePassword(req.body.password)) {
+        return res.send({
+          status: 401,
+          message: "Authentication failed. Invalid user or password."
+        });
+      }
+      return res.redirect("/home");
+    }
+  );
 });
 
 app.get("/home", (req, res) => {
-  firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-      var user = firebase.auth().currentUser;
-      var emailVerify = user.email;
-      MongoClient.connect(
-        process.env.MONGODB_URI || "mongodb://localhost/kit-app",
-        (err, db) => {
-          db.collection("students", function(err, collection) {
-            collection.find().toArray(function(err, items) {
-              if (err) {
-                res.send("Somthing went wrong");
-              }
-              var j = items.length;
-              for (var i = 0; i < j; i++) {
-                if (items[i].Email == emailVerify) {
-                  var item = items[i];
-                  res.render("home", { item: item });
-                }
-              }
-            });
-            db.close();
-          });
-        }
-      );
-    } else {
-      res.render("index", { error: "You must be logged in" });
-    }
-  });
+  // firebase.auth().onAuthStateChanged(function(user) {
+  //   if (user) {
+  //     var user = firebase.auth().currentUser;
+  //     var emailVerify = user.email;
+  //     MongoClient.connect(
+  //       process.env.MONGODB_URI || "mongodb://localhost/kit-app",
+  //       (err, db) => {
+  //         db.collection("students", function(err, collection) {
+  //           collection.find().toArray(function(err, items) {
+  //             if (err) {
+  //               res.send("Somthing went wrong");
+  //             }
+  //             var j = items.length;
+  //             for (var i = 0; i < j; i++) {
+  //               if (items[i].Email == emailVerify) {
+  //                 var item = items[i];
+  //                 res.render("home", { item: item });
+  //               }
+  //             }
+  //           });
+  //           db.close();
+  //         });
+  //       }
+  //     );
+  //   } else {
+  //     res.render("index", { error: "You must be logged in" });
+  //   }
+  // });
+  console.log(req.user);
+  res.json(req.user);
 });
 
 app.post(
