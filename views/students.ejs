@@ -2,8 +2,8 @@
     <head>
         <title>Kit Students</title>
         <link rel="stylesheet" type="text/css"href="bootstrap.css"/>
-        <link rel="stylesheet" type="text/css"href="semantic.css"/>    
-        <link rel="stylesheet" href="icon.css"/>    
+        <link rel="stylesheet" type="text/css"href="semantic.css"/>
+        <link rel="stylesheet" href="icon.css"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" media="all">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" rel="stylesheet" media="all">
@@ -14,14 +14,13 @@
         <script type="text/javascript" src="semantic.min.js" ></script>
     </head>
 <body style="background-image: url(de1.jpg);background-size:cover;">
-    <% var error ; if (error) { %>
+    <% if (error) { %>
        <div class="alert alert-danger"><%= error %></div>
      <% } %>
-
  <div class="q">
   <div class="ui container segment" style="width:35%; margin-top:2em; margin-bottom: 1.5em">
       <h1 class="ui header" style="margin : 0 auto;">Sign-Up</h1>
-        <form  id="frmUploader" enctype="multipart/form-data" class="ui form" action="/students" method="post">
+        <form id="frmUploader" enctype="multipart/form-data" class="ui form" action="/studentsignup" method="post">
           <h4 class="ui dividing header"style="padding-top: 5;">Personal Information</h4>
           <div class="two fields">
             <div class="field">
@@ -31,20 +30,20 @@
                 </div>
             </div>
             <div class="field">
-             <label>Register Number</label>
-             <input type="number" name="regNo" placeholder="Enter the Reg. No." required>
+             <label>Aadhar no.</label>
+             <input type="number" placeholder="Aadhar no." name="aadharNumber"required>
             </div>
           </div>
           <div class="two fields">
             <div class="field">
               <label>Date of birth</label>
                 <div class="field">
-                  <input type="date" name="dob" placeholder="Date of birth" required>
+                  <input type="date" name="dob" data-date-format="DD MMMM YYYY" placeholder="Date of birth" required>
                 </div>
             </div>
             <div class="field">
              <label>Mobile</label>
-             <input type="number" name="mobile" placeholder="Enter the mobile No." required>
+             <input type="number" name="phone" placeholder="Enter the mobile No." required>
             </div>
           </div>
           <div class="two fields">
@@ -62,7 +61,7 @@
                 <option value="MBC">MBC</option>
                 <option value="BCM">BCM</option>
                 <option value="SC">SC</option>
-                <option value="ST">ST</option>  
+                <option value="ST">ST</option>
                 <option value="OC">OC</option>
                 </select>
              </div>
@@ -78,8 +77,8 @@
                 <option value="CSE">CSE</option>
                 <option value="AERO">AERO</option>
                 <option value="AGRI">Agricultural Engg.</option>
-                <option value="Bio Med">Bio Medical Engg.</option>
-                <option value="Bio Tech">Bio-Tech</option>
+                <option value="BioMed">Bio Medical Engg.</option>
+                <option value="BioTech">Bio-Tech</option>
                 <option value="MBA">MBA</option>
                 <option value="MCA">MCA</option>
                 <option value="S&H">S & H</option>
@@ -102,21 +101,22 @@
           <h4 class="ui dividing header">Account Info</h4>
           <div class="two fields">
             <div class="required field">
-              <label>Username</label>
+
+              <label>Register Number</label>
               <div class="ui icon input">
-                <input type="text" placeholder="Username" name="username">
+                <input type="text" name="username" placeholder="Enter the Reg. No." required>
                 <i class="user icon"></i>
               </div>
             </div>
             <div class="required field">
               <label>Password</label>
               <div class="ui icon input">
-                <input type="password" placeholder="Password" name="pwd">
+                <input type="password" placeholder="Password" name="password">
                 <i class="lock icon"></i>
               </div>
             </div>
           </div>
-        <div class="ui hidden divider"></div>        
+        <div class="ui hidden divider"></div>
           <div class="ui error message">
             <div class="header">We noticed some issues</div>
           </div>
@@ -124,35 +124,35 @@
              <div class="ui success message">
                 <div class="header">Completed</div>
                 <p>You're all signed up </p>
-            </div>                
+            </div>
         </form>
       </div>
-    </div>   
+    </div>
 </body>
-    <script> 
-        $(document).ready(function () { 
-            var options = { 
-                beforeSubmit: showRequest,  // pre-submit callback 
-                success: showResponse  // post-submit callback 
-            }; 
-  
-            // bind to the form's submit event 
-            $('#frmUploader').submit(function () { 
-                $(this).ajaxSubmit(options); 
-                // always return false to prevent standard browser submit and page navigation 
-                return false; 
-            }); 
-        }); 
-  
-        // pre-submit callback 
-        function showRequest(formData, jqForm, options) { 
-            alert('Uploading is starting.'); 
-            return true; 
-        } 
-  
-        // post-submit callback 
-        function showResponse(responseText, statusText, xhr, $form) { 
-            alert('status: ' + statusText + '\n\nresponseText: \n' + responseText ); 
-        } 
-    </script> 
+    <script>
+    $(document).ready(function() {
+  var options = {
+    beforeSubmit: showRequest, // pre-submit callback
+    success: showResponse, // post-submit callback
+  };
+
+  // bind to the form's submit event
+  $("#frmUploader").submit(function() {
+    $(this).ajaxSubmit(options);
+    // always return false to prevent standard browser submit and page navigation
+    return false;
+  });
+});
+
+// pre-submit callback
+function showRequest(formData, jqForm, options) {
+  alert("Uploading is starting.");
+  return true;
+}
+
+// post-submit callback
+function showResponse(responseText, statusText, xhr, $form) {
+  alert("status: " + statusText + "\n\nresponseText: \n" + responseText);
+}
+</script>
 </html>

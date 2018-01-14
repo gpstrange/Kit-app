@@ -7,9 +7,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" media="all">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" rel="stylesheet" media="all">
-        <link rel="stylesheet" href="bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
         <link rel="stylesheet" href="style.css" />
-        <script type="text/javascript" src="semantin.min.js" ></script>
+        <script type="text/javascript" src="semantic.min.js" ></script>
         <script
           src="https://code.jquery.com/jquery-3.1.1.min.js"
           integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
@@ -33,7 +32,7 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
               <ul class="nav navbar-nav navbar-right">
-                <li><a href="/editprofile">Edit Profile</a></li>
+                <li><a href="/editstudent">Edit Profile</a></li>
                 <li><a href="/bluecard">Academics</a></li>
                 <li><a href="#">Books</a></li>
                 <li><a href="http://nptel.ac.in/">Nptel</a></li>
@@ -65,17 +64,18 @@
             </div>
       <center>
              <div class="ui container segment" style="width:35%; margin-top:2em;  margin-left:2em; margin-bottom: 1.5em">
-      <h1 class="ui header" style="margin : 0 auto;">Profile</h1><br>
+               <h1 class="ui header" style="margin : 0 auto;">Profile</h1><br>
                   <div class=" placeholder">
                       <img src="uploads/<%= item.pic %>" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail"><br>
                         <h2 style="color:#ECCF9E;  text-align:center"><%= item.name %></h4>
-                        <h4 style="color:#ECCF9E;  text-align:center">Reg No: <%= item.regNo %></h4>
-                        <h4 style="color:#ECCF9E;  text-align:center">DOB: <%= item.dob %></h4>
-                        <h4 style="color:#ECCF9E;  text-align:center">Mobile: <%= item.mobile %></h4>
+                        <h4 style="color:#ECCF9E;  text-align:center">Reg No: <%= item.username %></h4>
+                        <h4 style="color:#ECCF9E;  text-align:center">DOB: <%=  item.dob.toISOString().slice(0, 10);%></h4>
+                        <h4 style="color:#ECCF9E;  text-align:center">Mobile: <%= item.phone %></h4>
                         <h4 style="color:#ECCF9E;  text-align:center">Blood Group: <%= item.bloodGroup %></h4>
                         <h4 style="color:#ECCF9E;  text-align:center">Community: <%= item.community %></h4>
                         <h4 style="color:#ECCF9E;  text-align:center">Dept: <%= item.dept %></h4>
-                        <h4 style="color:#ECCF9E;  text-align:center">Email: <%= item.Email %></h4>
+                        <h4 style="color:#ECCF9E;  text-align:center">Email: <%= item.email %></h4>
+                        <h4 style="color:#ECCF9E;  text-align:center">Aadhar id: <%= item.aadharNumber %></h4>
                   </div>
             </center>
           </div>

@@ -1,22 +1,21 @@
 <html>
     <head>
-        <title>Kit || staffs</title>      
-        <link rel="stylesheet" type="text/css"href="bootstrap.css"/>
-        <link rel="stylesheet" type="text/css"href="semantic.css"/>    
-        <link rel="stylesheet" href="icon.css"/>    
+        <title>Kit || staffs</title>
+        <link rel="stylesheet" type="text/css"href="../bootstrap.css"/>
+        <link rel="stylesheet" type="text/css"href="../semantic.css"/>
+        <link rel="stylesheet" href="../icon.css"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" media="all">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" rel="stylesheet" media="all">
-        <link rel="stylesheet" href="bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-        <link rel="stylesheet" href="style.css" />
-        <script type="text/javascript" src="semantin.min.js" ></script>
+        <link rel="stylesheet" href="../style.css" />
+        <script type="text/javascript" src="../semantic.min.js" ></script>
         <script
           src="https://code.jquery.com/jquery-3.1.1.min.js"
           integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
           crossorigin="anonymous"></script>
-        <script src="bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script src="../bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     </head>
-    <body class="img-responsive" style="background: url(de1.jpg); background-size: cover;">
+    <body class="img-responsive" style="background: url(../de1.jpg); background-size: cover;">
 <!--============================================================================================================-->
                                         <!--  NavBar  -->
 <!--============================================================================================================-->
@@ -33,18 +32,16 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
               <ul class="nav navbar-nav navbar-right">
-<!--               add a search field here
- -->             
-                  <li><a href="/blue">Mark Entry</a></li>
+                <li><a href="/staffs/markentry">Mark Entry</a></li>
                 <li><a href="#">Upload Books</a></li>
                 <li><a href="http://nptel.ac.in/">Nptel</a></li>
                 <li><a href="/logout">Logout</a></li>
-                <form class="navbar-form navbar-right" action="/staffsearch" method="post">
+                <form class="navbar-form navbar-right" action="/staffs/searchStudent" method="post">
                     <div class="form-group">
                       <input type="number" class="form-control" placeholder="Type the Reg.No of student" name="search">
                     </div>
                     <button type="submit" class="btn btn-primary">Search</button>
-                  </form>  
+                  </form>
               </ul>
             </div>
           </div>
@@ -61,7 +58,7 @@
                   <ul class="nav nav-sidebar">
                     <li class="active"><a href="#">profile <span class="sr-only">(current)</span></a></li>
                     <li><a href="#">Attendance</a></li>
-                    <li><a href="/blue">Mark Entry</a></li>
+                    <li><a href="/staffs/markentry">Mark Entry</a></li>
                     <li><a href="http://www.rejinpaul.com/2014/01/regulation-2013-syllabus-anna-university-syllabus-2013-regulation.html">Books</a></li>
                     <li><a href="http://www.rejinpaul.com/2016/10/anna-university-rejinpaul-ug-pg-course-materials-notifications-updates.html">Question Banks</a></li>
                     <li><a href="#">Update Exam Schedule</a></li>
@@ -69,12 +66,19 @@
                   </ul>
                 </div>
                 <center>
-                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                    <h1 class="page-header" style="color:#800e10">Profile</h1>
+                  <div class="ui container segment" style="width:35%; margin-top:2em;  margin-left:2em; margin-bottom: 1.5em">
+                    <h1 class="page-header" style="color:#ECCF9E">Profile</h1>
                         <div class=" placeholder">
-                          <img src="pp.jpg" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-                          <h4 style="color:#800e10">Name</h4>
-                          <span class="text-muted">Dept </span>
+                          <img src="../uploads/<%= item.pic %>" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
+                            <h2 style="color:#ECCF9E;  text-align:center"><%= item.name %></h4>
+                            <h4 style="color:#ECCF9E;  text-align:center">Id No: <%= item.username %></h4>
+                            <h4 style="color:#ECCF9E;  text-align:center">DOB: <%=  item.dob.toISOString().slice(0, 10);%></h4>
+                            <h4 style="color:#ECCF9E;  text-align:center">Mobile: <%= item.phone %></h4>
+                            <h4 style="color:#ECCF9E;  text-align:center">Blood Group: <%= item.bloodGroup %></h4>
+                            <h4 style="color:#ECCF9E;  text-align:center">Community: <%= item.community %></h4>
+                            <h4 style="color:#ECCF9E;  text-align:center">Dept: <%= item.dept %></h4>
+                            <h4 style="color:#ECCF9E;  text-align:center">Email: <%= item.email %></h4>
+                            <h4 style="color:#ECCF9E;  text-align:center">Aadhar id: <%= item.aadharNumber %></h4>
                       </div>
                   </div>
                 </center>

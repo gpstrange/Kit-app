@@ -7,14 +7,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" media="all">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" rel="stylesheet" media="all">
-        <link rel="stylesheet" href="bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
         <link rel="stylesheet" href="style.css" />
-        <script type="text/javascript" src="semantin.min.js" ></script>
         <script
           src="https://code.jquery.com/jquery-3.1.1.min.js"
           integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
           crossorigin="anonymous"></script>
-        <script src="bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="semantic.min.js" ></script>
     </head>
     <style>
 
@@ -45,6 +43,33 @@
             </div>
           </div>
         </nav>
+  <!-- ============================================================================== -->
+                              <!--     Modal     -->
+  <!-- =============================================================================== -->
+        <div class="ui mini modal">
+          <i class="close icon"></i>
+          <div class="header">
+            Profile Picture
+          </div>
+          <form id="frmUploader" enctype="multipart/form-data" action="/student/uploadPic" method="POST">
+            <div class="content">
+              <div class="description">
+                  <input type="file" name="pic">
+              </div>
+            </div>
+            <div class="actions">
+              <div class="ui black deny button">
+                Cancel
+              </div>
+              <input type="submit" class="btn btn-danger" value="Upload" >
+            </div>
+          </form>
+        </div>
+        <div class="ui basic modal">
+            <div class="ui active">
+              <div class="ui large text loader">Just one sec..!!</div>
+            </div>
+        </div>
 <!--==============================================================================================================-->
                                          <!--  Content  -->
 <!--===============================================================================================================-->
@@ -61,17 +86,30 @@
                 <li><a href="/logout">Logout</a></li>
               </ul>
             </div>
+
             <center>
                 <div class="container" style="width:50%;margin-top:20px">
                     <h1>Edit Profile</h1>
                     <hr>
-                    <form enctype="multipart/form-data" class="ui form" action="/editstudent" method="post">
+                    <form class="ui form" action="/editstudent" method="post">
                     <div class="row">
                       <div class="col-md-3">
-                        <div class="text-center">
+                        <div class="text-center" id="div">
                           <img src="uploads/<%= item.pic %>" width="200" height="200" class="avatar img-circle img-responsive" alt="avatar">
-                          <h6>Upload a different photo...</h6>
-                          <input type="file" name="pic" value="" class="form-control" style="border:0px" required>
+                          <h6><%=item.pic%></h6>
+                          <input type="button" class="btn btn-danger" id="uploadPic" value="Upload photo">
+<script>
+$("#uploadPic").click(() => {
+   console.log("Clicked");
+   $('.ui.modal')
+  .modal('show');
+});
+$("#formSubmit").click(()=>{
+  $('.ui.basic.modal').modal('show');
+  var URL='http://localhost:8000/editstudent';
+  setTimeout(function(){ window.location = URL; }, 1000 );
+});
+</script>
                         </div>
                       </div>
 
@@ -93,18 +131,18 @@
                                 </div>
                             </div>
                             <div class="disabled field">
-                             <label style="color:#800e10;">Reg.No </label>
-                             <input type="number" name="regNo" value="<%= item.regNo %>" >
+                             <label style="color:#800e10;">Aadhar.No </label>
+                             <input type="number" name="aadharNumber" value="<%= item.aadharNumber %>" >
                             </div>
                             <div class="field">
                               <label style="color:#800e10;">Date of birth</label>
                                 <div class="field">
-                                  <input type="date" name="dob" value="<%= item.dob %>" required>
+                                  <input type="date" name="dob" value="<%=  item.dob.toISOString().slice(0, 10);%>" required>
                                 </div>
                             </div>
                             <div class="field">
                              <label style="color:#800e10;">Mobile</label>
-                             <input type="number" name="mobile" value="<%= item.mobile %>" required>
+                             <input type="number" name="phone" value="<%= item.phone %>" required>
                             </div>
                             <div class="field">
                               <label style="color:#800e10;">Blood Group</label>
@@ -143,15 +181,15 @@
                                 <option value="M.E">M.E</option>
                               </select>
                             </div>
-                            <div class="disabled field">
+                            <div class="field">
                               <label style="color:#800e10;">E-mail</label>
-                              <input type="text" name="email" value="<%= item.Email %>" ></div>
+                              <input type="text" name="email" value="<%= item.email %>" ></div>
                           <div class="field">
                             <label style="color:#800e10;">Address</label>
-                            <textarea name="address" value=""></textarea>
+                            <textarea name="address" value="<%= item.address %>"><%= item.address %></textarea>
                           </div>
                           <h4 class="ui dividing header">Account Info</h4>
-                            <div class="required field">
+                            <div class="required field disabled ">
                               <label style="color:#800e10;">Username</label>
                               <div class="ui icon input">
                                 <input type="text" value="<%= item.username %>" name="username">
@@ -161,14 +199,14 @@
                             <div class="required field">
                               <label style="color:#800e10;">Password</label>
                               <div class="ui icon input">
-                                <input type="password" name="pwd">
+                                <input type="password" name="password" required>
                                 <i class="lock icon"></i>
                               </div>
                             </div>
                           <div class="form-group">
                             <label class="col-md-3 control-label"></label>
                             <div class="col-md-8">
-                              <input type="submit" class="btn btn-primary" value="Save Changes">
+                              <input type="submit" class="btn btn-danger" id="formSubmit" value="Save Changes" >
                               <span></span>
                               <input type="reset" class="btn btn-default" value="Cancel">
                             </div>
@@ -181,5 +219,12 @@
             </center>
           </div>
         </div>
+        <!-- <script>
+        $("#formSubmit").click(()=>{
+          $('.ui.basic.modal').modal('show');
+          var URL='http://localhost:8000/wereditstudent';
+          setTimeout(function(){ window.location = URL; }, 1000 );
+        });
+        </script> -->
     </body>
 </html>

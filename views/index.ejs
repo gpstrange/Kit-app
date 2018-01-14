@@ -11,17 +11,32 @@
 </head>
 <body style="background: url(de1.jpg); background-size: cover;">
 <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+(function(i, s, o, g, r, a, m) {
+  i["GoogleAnalyticsObject"] = r;
+  (i[r] =
+    i[r] ||
+    function() {
+      (i[r].q = i[r].q || []).push(arguments);
+    }),
+    (i[r].l = 1 * new Date());
+  (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+  a.async = 1;
+  a.src = g;
+  m.parentNode.insertBefore(a, m);
+})(
+  window,
+  document,
+  "script",
+  "https://www.google-analytics.com/analytics.js",
+  "ga"
+);
 
-      ga('create', 'UA-2195009-2', 'auto');
-      ga('send', 'pageview');
+ga("create", "UA-2195009-2", "auto");
+ga("send", "pageview");
 
-      ga('create', 'UA-2195009-27', 'auto', {name: "foundation"});
-      ga('foundation.send', 'pageview');
-    </script>
+ga("create", "UA-2195009-27", "auto", { name: "foundation" });
+ga("foundation.send", "pageview");
+</script>
     <div class="title-bar" data-responsive-toggle="realEstateMenu" data-hide-for="small">
     <button class="menu-icon" type="button" data-toggle></button>
     <div class="title-bar-title">Menu</div>
@@ -35,8 +50,8 @@
     </div>
     <div class="top-bar-right" style="margin-top: 5px;">
     <ul class="menu">
-    <li><a href="/staffs"  style="color:#ECCF9E;">Staffs Login</a></li>
-    <li><a href="/students"  style="color:#ECCF9E;">Students</a></li>
+    <li><a href="/staffs/login"  style="color:#ECCF9E;">Staffs Login</a></li>
+    <li><a href="/studentsignup"  style="color:#ECCF9E;">Students</a></li>
     </ul>
     </div>
     </div>
@@ -44,7 +59,7 @@
      <% var error ;if (error) { %>
        <div class="alert alert-danger"><%= error %></div>
      <% } %>
-<div class="row"> 
+<div class="row">
     <div class="medium-7 large-6 columns">
         <h3 style="color:#800e10">KalaignarKarunanidhi Institute of Technology</h3>
         <p class="subheader" style="color:#800e10">KIT-Kalaignarkarunanidhi Institute of Technology, one of the best Engineering College in Coimbatore, is located at a distance of 12 kilometers from Coimbatore Railway Station and 8 kilometers from Coimbatore Civil Aerodrome. Set in a calm and congenial locale, the college stands nestled in a spacious campus set in a vast area of 5 lakhs sq.ft.with five storied buildings housing classrooms, laboratories, library, faculty rooms, conference halls, administrative and residential areas.</p>
@@ -61,16 +76,16 @@
         </div>
     <div class="medium-5 large-3 columns">
         <div class="callout secondary" style="border:2px solid rgb(228, 166, 25);background:#800e10;">
-            <form action="/login" method="post">
+            <form action="/studentlogin" method="post">
                 <div class="row">
                     <div class="small-12 columns">
-                     <label style="color:#ECCF9E">Email
-                        <input type="text" placeholder="Email" name="username">
+                     <label style="color:#ECCF9E">Register Number
+                        <input type="text" placeholder="Register number" name="username">
                      </label>
                     </div>
                     <div class="small-12 columns">
                         <label style="color:#ECCF9E">Password
-                        <input type="password" placeholder="Password" name="pwd">
+                        <input type="password" placeholder="Password" name="password">
                         </label>
                     <button type="submit" class="button" style="background-color:#ead295;color:#800e10">Login</button>
                     </div>
@@ -78,7 +93,7 @@
             </form>
         </div>
     </div>
-    
+
 </div>
 <div class="row column">
 <hr style="border-bottom: 1px solid #800e10;">
@@ -86,8 +101,8 @@
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="http://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.js"></script>
 <script>
-      $(document).foundation();
-    </script>
+$(document).foundation();
+</script>
 <script type="text/javascript" src="https://intercom.zurb.com/scripts/zcom.js"></script>
 </body>
 </html>
