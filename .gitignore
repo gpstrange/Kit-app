@@ -2,8 +2,6 @@
 ## Eclipse
 #################
 
-config/database.js
-
 *.pydevproject
 .project
 .metadata
