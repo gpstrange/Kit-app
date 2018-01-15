@@ -6,7 +6,8 @@ var express = require("express");
 var session = require("express-session");
 var cookieParser = require("cookie-parser");
 var bodyParser = require("body-parser");
-var app = process.env.PORT || 8000;
+var app = express();
+var port =  process.env.PORT || 8000;
 
 var passport = require("passport");
 var flash = require("connect-flash");
