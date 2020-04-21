@@ -1,4 +1,4 @@
-# Node Authentication with MySQL - Guru2402
+# Node Authentication with MySQL - Gpstrange
 
 
 ## Instructions
